@@ -1,31 +1,8 @@
 #!/usr/bin/env bash
 CPU_USAGE_FILE="/proc/stat"
 
-get_most_least_core() {
-    # this doesnt fucking work 
-    least_used=$( \
-        awk 'BEGIN {idle = 0; max = 0} 
-        /^cpu[0-9]+/ {
-            idle=$5+$6; 
-            if(idle >= max) {max=idle; name=$1}
-        }
-        END {printf "%s", name}' $CPU_USAGE_FILE \
-    )
-    most_used=$( \
-        awk 'BEGIN {total = 0; max = 0; name=""}
-        /^cpu[0-9]+/ {
-        total=$2+$3+$4; 
-        if(total >= max){ name=$1; max=total;} 
-        } END {printf "%s", name}' $CPU_USAGE_FILE \
-    )
-    echo "least=$least_used"
-    echo "most=$most_used"
-}
-
-get_cpu_cores() {
-    local core_count=$(cat "$CPU_INFO_FILE" | grep -ci "processor")
-    printf "%d" "$core_count"
-}
+## refactor code and use read to set values 
+c
 
 ## refactor code and use read to set values 
 calculate_usage() {
@@ -105,9 +82,7 @@ calculate_core_usage() {
     for core in "${!total_time1[@]}"; do
             core_usage[$core]=$(calculate_percent "${total_time1[$core]}" "${total_time2[$core]}" \
             "${idle_time1[$core]}" "${idle_time2[$core]}")
-    done
+            echo "$core=${core_usage["$core"]}%"
 
-    for core in "${!core_usage[@]}"; do 
-        echo "$core=${core_usage["$core"]}%"
     done
 }
