@@ -97,7 +97,7 @@ get_cores_usage() {
 
 # fix this
 get_most_least_core() {
-    
+    # processing requires setting IFS=':'
     least_used=$( \
         awk 'BEGIN {idle = 0; max = 0} 
         /^cpu[0-9]+/ {
