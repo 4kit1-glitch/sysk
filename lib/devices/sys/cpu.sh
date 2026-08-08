@@ -4,6 +4,7 @@
 # shellcheck disable=2155
 # TERMAL INFO HANDLED IN temparature.sh
 #
+# there is lots of dead code in this file its becomming anoying
 
 readonly CONFIG_DIR="$XDG_CONFIG_HOME"
 
@@ -27,16 +28,28 @@ get_cpu_cores() {
     printf "%d" "$core_count"
 }
 
+calculate_percent() {
+    total_time1=$1
+    total_time2=$2
+    idle_time1=$3
+    idle_time2=$4
+    local total_delta=$(( total_time2 - total_time1 ))
+    local idle_delta=$(( idle_time2 - idle_time1 ))
+    local working_time=$(( total_delta - idle_delta ))
+    local usage=$( bc -q <<< "scale=2; 100 * $working_time / $total_delta" )
+
+    printf "%.2f%%" "$usage"
+}
+
 ## refactor code and use read to set values 
-calculate_usage() {
+calculate_cpu_usage() {
+    # this function has code that ddodesnt do any thing 
     local -r interval=1
     local -r item_passed=$1
     local value_tc=""
 
-    if [[ $item_passed =~ (^cpu |^CPU |^cpu) ]]; then
-        value_tc="^cpwrite_cpu_configu "
-    elif [[ $item_passed =~ (^cpu[0-9]+) ]]; then 
-        value_tc="$item_passed"
+    if [[ $item_passed == "cpu" ]]; then
+        value_tc="^cpu "
     else
         printf "cannot calculate usage of %s not available" "$item_passed" >&2
         return "$ERR_BAD_USAGE"
@@ -65,37 +78,50 @@ calculate_usage() {
 
     printf "%.2f%%" "$usage"
 }
+
+
+calculate_core_usage() {
+    local -A total_time1
+    local -A total_time2
+    local -A idle_time1
+    local -A idle_time2
+    local -A core_usage
+    
+    while read -r line; do 
+        if [[ $line =~ ^cpu[0-9]+ ]]; then
+            core_name=$(echo "$line" | awk '{print $1}')
+            total_time1[$core_name]=$(echo "$line" | awk '{sum=0; for(i=2;i<=NF;i++){sum+=$i} print sum}')
+            idle_time1[$core_name]=$(echo "$line" | awk '{print $5+$6}')
+        fi
+    done < "$CPU_USAGE_FILE"
+    sleep 1
+
+    while read -r line; do 
+        if [[ $line =~ ^cpu[0-9]+ ]]; then
+            core_name=$(echo "$line" | awk '{print $1}')
+            total_time2[$core_name]=$(echo "$line" | awk '{sum=0; for(i=2;i<=NF;i++){sum+=$i} print sum}')
+            idle_time2[$core_name]=$(echo "$line" | awk '{print $5+$6}')
+        fi
+    done < "$CPU_USAGE_FILE"
+
+    for core in "${!total_time1[@]}"; do
+            core_usage[$core]=$(calculate_percent "${total_time1[$core]}" "${total_time2[$core]}" \
+            "${idle_time1[$core]}" "${idle_time2[$core]}")
+            echo "$core=\"${core_usage["$core"]}\""
+
+    done
+}
+
 get_load_average() {
-    local load="$(cat $LOAD_INFO_FILE | awk '{print $1 $2 $3}')"
+    local load="$(cat $LOAD_INFO_FILE | awk '{printf "%.3f:%.3f:%.3f",$1, $2, $3}')"
     printf "%s" "$load"
 }
 
 get_cpu_usage() {
-    local -r usage=$(calculate_usage "cpu")
+    local -r usage=$(calculate_cpu_usage "cpu")
     echo -en "$usage" ## i know you might want to use printf but don't it doesn't work i dont know why
 }
 
-
-get_cores_usage() {
-    # this function is quite slow cause it waits the core amount times in seconds 
-    # might need refatoring 
-    # avoid running if possible
-    # actually gets the info but will process later
-    local -r CORES=$(get_cpu_cores)
-    local -A core_usages
-
-    # first set core usage percentages
-    for (( i=0; i<CORES; i++ )); do
-        core_usages["cpu$i"]=$(calculate_usage "cpu$i")
-    done
-
-    for core in "${!core_usages[@]}"; do 
-        echo "$core=${core_usages["$core"]}"
-    done
-
-}
-
-# fix this
 get_most_least_core() {
     # processing requires setting IFS=':'
     least_used=$( \
@@ -121,7 +147,7 @@ get_running_total() {
     # think its better to get them both then process at need rather than individually
     # maybe will improve later
     local running_total=$( \
-        awk 'print $' $LOAD_INFO_FILE
+        awk '{print $4}' $LOAD_INFO_FILE
     )
     printf "%s" "$running_total"
 }
@@ -139,9 +165,8 @@ get_system_uptime() {
         "$uptime_secs" "$uptime_mins" "$uptime_hrs" "$uptime_days" "$uptime_weeks" "$idle_secs"
 }
 
-
-
 write_cpu_config() {
+    # using echo instead of printf cause its easier and quick modify for consistency
     CPU_CONFIG="$CONFIG_DIR/cpu.conf"
     mkdir -p "$CONFIG_DIR"
     {
@@ -150,8 +175,13 @@ write_cpu_config() {
         echo "cpu_usage=\"$(get_cpu_usage)\""
         echo "uptime=\"$(get_system_uptime)\""
         echo "load_average=\"$(get_load_average)\""
+        echo "most_least_core=\"$(get_most_least_core)\"" # joining the info makes more sense than having to call the function twice
+        calculate_core_usage
 
+        IFS='/' read -r running_procs total_procs <<< "$(get_running_total)"
+        echo "running_procs=\"$running_procs\""
+        echo "total_procs=\"$total_procs\""
+        
     } > "$CPU_CONFIG" 
 
 }
-get_cores_usage
