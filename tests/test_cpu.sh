@@ -2,9 +2,6 @@
 CPU_USAGE_FILE="/proc/stat"
 
 ## refactor code and use read to set values 
-c
-
-## refactor code and use read to set values 
 calculate_usage() {
     local -r interval=1
     local -r item_passed=$1
@@ -86,3 +83,4 @@ calculate_core_usage() {
 
     done
 }
+calculate_core_usage
