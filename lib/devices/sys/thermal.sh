@@ -17,12 +17,10 @@ get_avg_temp(){
     # general system temparature, mother board and 
     # average_temp = average temparature in degree celcius 
     # total_millic combined system temparature from all thermal zones
-    
-    
     local total_millic=$(paste $SYSTEM_THERMAL_ZONE_FILE/temp 2> /dev/null | \
-        awk 'BEGIN{sum=0}{for(i=1; i<=NF; i++)sum+=$i} END {print sum}')
-
-    local average_temp=$(bc -q <<< "scale=2; ($total_millic / $SYSTEM_THERMAL_ZONES) / 1000")
-    echo "$total_millic"
+        awk 'BEGIN{sum=0}{for(i=1; i<=NF; i++)sum+=$i} END {print sum / (i * 1000)}')
+    local average_temp=$(bc -q <<< "scale=2; $total_millic / 1000")
+    echo $total_millic
+    printf "%.2f*C" "$average_temp"
 }
 get_avg_temp
