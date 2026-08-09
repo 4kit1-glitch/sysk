@@ -15,8 +15,13 @@ readonly SYSTEM_THERMAL_ZONES=$(find "$SYSTEM_THERMAL_ZONE_PATH"*/type | wc -l)
 convert_to_celcius() {
     # converts temp in millicelcius to celcius
     local -r value_tc=$1 # value to convert
-    celcius=$( bc -q <<< "scale=3; $value_tc / 1000" )
-
+    if [[ $value_tc =~ ^[0-9]+$ ]]; then 
+        celcius=$( bc -q <<< "scale=3; $value_tc / 1000" )
+    elif [[ $value_tc == "N/A" ]]; then
+        printf "N/A"
+    else
+        printf "not a digit skipping!!!!" >&2
+    fi
     printf "%.2f*C" "$celcius"
 }
 get_avg_temp() {
@@ -25,7 +30,7 @@ get_avg_temp() {
 }
 get_zone_temps() {
     for zone in "$SYSTEM_THERMAL_ZONE_PATH"*; do 
-        echo "$(cat "$zone"/type)=\"$(cat $zone/temp  2> /dev/null || { printf "N/A"; } | )\""
+        echo "$(cat "$zone"/type)=\"$(convert_to_celcius "$(cat $zone/temp  2> /dev/null || { printf "N/A"; })")\""
     done
 }
 get_cpu_temp() {
