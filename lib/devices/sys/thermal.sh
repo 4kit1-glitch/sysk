@@ -11,6 +11,7 @@
 
 readonly SYSTEM_THERMAL_ZONE_PATH="/sys/class/thermal/thermal_zone"
 readonly SYSTEM_THERMAL_ZONES=$(find "$SYSTEM_THERMAL_ZONE_PATH"*/type | wc -l)
+readonly SYSTEM_FAN_INFO_PATH="/sys/class/hwmon"
 
 convert_to_celsius() {
     # converts temp in millicelcius to celcius
@@ -44,16 +45,25 @@ get_zone_temps() {
             "$(cat $zone/temp  2> /dev/null || { printf "N/A"; })")\""
     done
 }
-get_cpu_temp() {
-    echo pass
-}
-
-get_gpu_temp() {
-echo pass
-}
 
 get_fan_status() {
     # number of fans
-    # speed and status
-    echo pass
+    # could not properly get fan info like speed and ac 
+    local fan_zones="$(find "$SYSTEM_FAN_INFO_PATH"/hwmon*/fan*_input 2> /dev/null | wc -l)"
+    if (( fan_zones == 0 )); then
+        printf "N/A"
+    else
+        printf "%d" "$fan_zones"
+    fi
+}
+
+get_fan_speed() {
+    local zones="$(get_fan_status)"
+    if [[ $zones == "N/A" ]]; then
+        printf "N/A"
+    else
+        for input in "$SYSTEM_FAN_INFO_PATH"/hwmon*/fan*_input; do 
+            printf "%s=\"%s\"\n" "$(basename $input)" "$(cat $input)"
+        done
+    fi
 }
