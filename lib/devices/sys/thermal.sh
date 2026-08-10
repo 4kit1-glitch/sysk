@@ -9,6 +9,7 @@
 # - general system temparature
 
 
+readonly CONFIG_DIR="$XDG_CONFIG_HOME"
 readonly SYSTEM_THERMAL_ZONE_PATH="/sys/class/thermal/thermal_zone"
 readonly SYSTEM_THERMAL_ZONES=$(find "$SYSTEM_THERMAL_ZONE_PATH"*/type | wc -l)
 readonly SYSTEM_FAN_INFO_PATH="/sys/class/hwmon"
@@ -66,4 +67,8 @@ get_fan_speed() {
             printf "%s=\"%s\"\n" "$(basename $input)" "$(cat $input)"
         done
     fi
+}
+
+write_thermal_config() {
+
 }
