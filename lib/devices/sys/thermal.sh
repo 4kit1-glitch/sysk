@@ -9,7 +9,6 @@
 # - general system temparature
 
 
-readonly CONFIG_DIR="$XDG_CONFIG_HOME"
 readonly SYSTEM_THERMAL_ZONE_PATH="/sys/class/thermal/thermal_zone"
 readonly SYSTEM_THERMAL_ZONES=$(find "$SYSTEM_THERMAL_ZONE_PATH"*/type | wc -l)
 readonly SYSTEM_FAN_INFO_PATH="/sys/class/hwmon"
@@ -70,5 +69,16 @@ get_fan_speed() {
 }
 
 write_thermal_config() {
+    THERMAL_CONFIG="$CONFIG_DIR/thermal.conf"
 
+    mkdir -p "$CONFIG_DIR"   
+    {
+        echo "avg_temp=\"$(get_avg_temp)\""
+        echo "thermal_zones=\"$SYSTEM_THERMAL_ZONES\""
+        # zone temparatures
+        get_zone_temps
+        echo "fan_status=\"$(get_fan_status)\""
+        echo "fan_speed=\"$(get_fan_speed)\""        
+    
+    } > "$THERMAL_CONFIG"
 }
