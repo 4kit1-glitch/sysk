@@ -19,51 +19,62 @@ readonly MEM_INFO_FILE="/proc/meminfo"
 readonly CPU_INFO_FILE="/proc/cpuinfo"
 
 
-convert_to_unit() {
+convert() {
     # function converts to units to gigabytes
     local -r VALUE_TC="$1"
     local -r UNIT_FROM="$2"
     local -r UNIT_TO="$3"
 
-    local -r allowed_units=(
-        "MB" "KB" "GB" "B" "bits"
-    )
-
-
+    if [[ ($UNIT_FROM =~ ("MB"|"KB"|"GB"|"B"|"bits")) && \
+            ($UNIT_TO =~ ("MB"|"KB"|"GB"|"B"|"bits")) ]]; then
+        echo "$UNIT_FROM===>$UNIT_TO"
+    else
+        printf "Invalid use" >&2
+        exit 2
+    fi
 }
 
 #---------------RAM-----------------------------
 
 get_installed_mem_num() {
-
+    echo pass
 }
 get_total_mem() {
-
+    echo pass
 }
 get_used_mem() {
-
+    echo pass
 }
 get_available_mem() {
-
+    echo pa
 }
 get_cached_mem() {
-
+    echo pa
 }
 get_swap_mem() {
-
+    echo pa
 }
-get_used_cached() {}
-get_used_swap() {}
-get_used_cache() {}
+get_used_cached() {
+    echo pa
+}
+get_used_swap() {
+    echo pa
+}
+get_used_cache() { 
+    echo pa
+}
 
 # cpu level memory
-get_cpu_cache_info() {}
+get_cpu_cache_info() {
+    echo pa
+}
 
 get_memory_device_info() {
+    echo pa
 }
 
 
-
+convert 1000 MB GB
 
 
 
