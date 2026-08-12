@@ -47,15 +47,14 @@ read_dmi() {
     local -r TYPE="$1"
     local -r FIELD="$2"
 
-    run_privileged dmidecode -q -t "$TYPE" | grep -E "^[[:space:]]"
+    run_privileged dmidecode -q -t "$TYPE" | awk -F': ' -v field=$FIELD '{print $2}'
 }
 
 #---------------RAM-----------------------------
 # processing dmidecode
 get_installed_mem_num() {
-    # 16 reps physical memory address see man dmidecode
-    # prints installed ram number
-    run_privileged dmidecode -q -t 16 | awk -F': ' '/^[[:space:]]Number/ {print $2}'
+    
+
 }
 get_maximum_capacity() {
     
