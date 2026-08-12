@@ -16,8 +16,6 @@
 
 # static
 readonly MEM_INFO_FILE="/proc/meminfo"
-readonly CPU_INFO_FILE="/proc/cpuinfo"
-
 
 convert() {
     local -ri MULTIPLYER=1024
@@ -45,10 +43,14 @@ convert() {
 }
 
 #---------------RAM-----------------------------
-
+# processing dmidecode
 get_installed_mem_num() {
+    # 16 reps physical memory address see man dmidecode
+    # prints installed ram number
     run_privileged dmidecode -q -t 16 | awk -F': ' '/^[[:space:]]Number/ {print $2}'
 }
+
+
 get_total_mem() {
     echo pass
 }
@@ -82,9 +84,6 @@ get_cpu_cache_info() {
 get_memory_device_info() {
     echo pa
 }
-
-
-convert 1000 "MB"
 
 
 
