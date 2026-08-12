@@ -2,10 +2,112 @@
 
 # script carries functions that work with system memory info and test
 # ext stands for extended
+# ram size 
+# used 
+# available
+# cached
+# swap 
+# used 
+# availabel
+# cache
+# used
+# available
 
-#----------- Getters --------------------------
+
+# static
+readonly MEM_INFO_FILE="/proc/meminfo"
+readonly CPU_INFO_FILE="/proc/cpuinfo"
+
+
+convert_to_unit() {
+    # function converts to units to gigabytes
+    local -r VALUE_TC="$1"
+    local -r UNIT_FROM="$2"
+    local -r UNIT_TO="$3"
+
+    local -r allowed_units=(
+        "MB" "KB" "GB" "B" "bits"
+    )
+
+
+}
 
 #---------------RAM-----------------------------
+
+get_installed_mem_num() {
+
+}
+get_total_mem() {
+
+}
+get_used_mem() {
+
+}
+get_available_mem() {
+
+}
+get_cached_mem() {
+
+}
+get_swap_mem() {
+
+}
+get_used_cached() {}
+get_used_swap() {}
+get_used_cache() {}
+
+# cpu level memory
+get_cpu_cache_info() {}
+
+get_memory_device_info() {
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # quick details about ram 
 get_short_ram_info() {
     local short_ram_info="$(
