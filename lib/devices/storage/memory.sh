@@ -20,24 +20,34 @@ readonly CPU_INFO_FILE="/proc/cpuinfo"
 
 
 convert() {
-    # function converts to units to gigabytes
+    local -ri MULTIPLYER=1024
+    # function converts to units to Megabytes
     local -r VALUE_TC="$1"
     local -r UNIT_FROM="$2"
-    local -r UNIT_TO="$3"
-
-    if [[ ($UNIT_FROM =~ ("MB"|"KB"|"GB"|"B"|"bits")) && \
-            ($UNIT_TO =~ ("MB"|"KB"|"GB"|"B"|"bits")) ]]; then
-        echo "$UNIT_FROM===>$UNIT_TO"
+    local result
+    if [[ $UNIT_FROM =~ ([Mm][Bb]|[kK][bB]|[gG][bB]) ]]; then
+            case $UNIT_FROM in 
+                "MB")
+                    result="$VALUE_TC"
+                    ;;
+                "KB")
+                    result="$(bc -q <<< "$VALUE_TC * $MULTIPLYER")"
+                    ;;
+                "GB")
+                    result=$(bc -q <<< "scale=3; $VALUE_TC / $MULTIPLYER")
+                    ;;
+            esac
     else
         printf "Invalid use" >&2
         exit 2
     fi
+    printf "%s Mb" "$result"
 }
 
 #---------------RAM-----------------------------
 
 get_installed_mem_num() {
-    echo pass
+    run_privileged dmidecode -q -t 16 | awk -F': ' '/^[[:space:]]Number/ {print $2}'
 }
 get_total_mem() {
     echo pass
@@ -74,7 +84,7 @@ get_memory_device_info() {
 }
 
 
-convert 1000 MB GB
+convert 1000 "MB"
 
 
 
