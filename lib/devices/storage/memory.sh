@@ -18,8 +18,8 @@
 readonly MEM_INFO_FILE="/proc/meminfo"
 
 convert() {
-    local -ri MULTIPLYER=1024
     # function converts to units to Megabytes
+    local -ri MULTIPLYER=1024
     local -r VALUE_TC="$1"
     local -r UNIT_FROM="$2"
     local result
@@ -42,12 +42,23 @@ convert() {
     printf "%s Mb" "$result"
 }
 
+read_dmi() {
+    # function is a wrapper to dmidecode
+    local -r TYPE="$1"
+    local -r FIELD="$2"
+
+    run_privileged dmidecode -q -t "$TYPE" | grep -E "^[[:space:]]"
+}
+
 #---------------RAM-----------------------------
 # processing dmidecode
 get_installed_mem_num() {
     # 16 reps physical memory address see man dmidecode
     # prints installed ram number
     run_privileged dmidecode -q -t 16 | awk -F': ' '/^[[:space:]]Number/ {print $2}'
+}
+get_maximum_capacity() {
+    
 }
 
 
