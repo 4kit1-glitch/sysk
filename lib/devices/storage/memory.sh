@@ -106,11 +106,22 @@ get_free_virtual() {
     # gets ramaining virtual mem
     echo pass
 }
+
+#-----------------------------
+get_hardware_corrupted() {
+    # reads bad ram pages
+    read_meminfo "HardwareCurrupted"
+}
+
+get_unevictable_mem() {
+    # reads ram locked by kernel
+    read_meminfo "Unevictable"
+}
+
 # cpu level memory
 get_cpu_cache_info() {
     echo pa
 }
-
 
 
 
