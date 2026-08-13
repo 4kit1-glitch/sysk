@@ -44,11 +44,11 @@ convert() {
 
 read_meminfo() {
     local -r FIELD="$1"
-    cat $MEM_INFO_FILE | grep -i "^$FIELD:"
+    cat $MEM_INFO_FILE | awk -v field="$FIELD" '$0 ~ field {print $2}'
 }
 
 get_total_mem() {
-    
+    read_meminfo "MemTotal"
 }
 get_used_mem() {
     echo pass
@@ -82,7 +82,7 @@ get_memory_device_info() {
 }
 
 
-
+get_total_mem
 
 
 
