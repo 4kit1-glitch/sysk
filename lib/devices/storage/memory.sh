@@ -118,6 +118,11 @@ get_unevictable_mem() {
     read_meminfo "Unevictable"
 }
 
+get_balloon_mem() {
+    # gets Ballon memory thats used by Virtual machines
+    read_meminfo "Balloon"
+
+}
 # cpu level memory
 get_cpu_cache_info() {
     echo pa
