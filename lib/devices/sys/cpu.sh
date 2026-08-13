@@ -165,6 +165,10 @@ get_system_uptime() {
         "$uptime_secs" "$uptime_mins" "$uptime_hrs" "$uptime_days" "$uptime_weeks" "$idle_secs"
 }
 
+# get cpu cache
+# get cpu speed
+# get core speed
+
 write_cpu_config() {
     # using echo instead of printf cause its easier and quick modify for consistency
     CPU_CONFIG="$CONFIG_DIR/cpu.conf"
