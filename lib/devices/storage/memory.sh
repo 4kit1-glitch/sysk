@@ -28,7 +28,7 @@ convert() {
                 "MB") result="$VALUE_TC";;
                 "KB") result="$(bc -q <<< "scale=1; $VALUE_TC / $MULTIPLYER")" ;;
                 "GB")
-                    result=$(bc -q <<< "scale=2; $VALUE_TC / $MULTIPLYER / $MULTIPLYER ")
+                    result=$(bc -q <<< "scale=2; $VALUE_TC * $MULTIPLYER")
                     ;;
             esac
     else
