@@ -42,27 +42,13 @@ convert() {
     printf "%s Mb" "$result"
 }
 
-read_dmi() {
-    # function is a wrapper to dmidecode
-    local -r TYPE="$1"
-    local -r FIELD="$2"
-
-    run_privileged dmidecode -q -t "$TYPE" | awk -F': ' -v field=$FIELD '{print $2}'
+read_meminfo() {
+    local -r FIELD="$1"
+    cat $MEM_INFO_FILE | grep -i "^$FIELD:"
 }
-
-#---------------RAM-----------------------------
-# processing dmidecode
-get_installed_mem_num() {
-    
-
-}
-get_maximum_capacity() {
-    
-}
-
 
 get_total_mem() {
-    echo pass
+    
 }
 get_used_mem() {
     echo pass
