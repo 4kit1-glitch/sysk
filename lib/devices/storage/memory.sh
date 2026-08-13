@@ -57,7 +57,9 @@ get_available_mem() {
 }
 get_used_mem() {
     # gets used memory
-    echo pass
+    local difference
+    difference="$(bc -q <<< "scale=2; $(get_total_mem | awk '{print $1}') - $(get_available_mem | cut -d' ' -f 1)")"
+    convert "$difference" "KB"
 }
 
 # ------ CACHE / BUFFERS -----------------
@@ -131,3 +133,23 @@ get_anon_pages() {
     # reads anonpage size
     read_meminfo "AnonPages"
 }
+
+
+write_memory_config() {
+    # writes memory config file
+    local MEM_CONFIG="$CONFIG_DIR/memory.conf"
+
+    mkdir -p "$CONFIG_DIR"
+    {
+        echo "total_mem=\"$(get_mem_total)\""
+        echo "total_mem=\"$()\""
+        echo "total_mem=\"$()\""
+        echo "total_mem=\"$()\""
+        echo "total_mem=\"$()\""
+        echo "total_mem=\"$()\""
+
+    } > "$MEM_CONFIG"
+
+}
+
+get_used_mem
