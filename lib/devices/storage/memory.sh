@@ -123,6 +123,10 @@ get_balloon_mem() {
     read_meminfo "Balloon"
 
 }
+
+get_dirty_mem() {
+    read_meminfo "Dirty"
+}
 # cpu level memory
 get_cpu_cache_info() {
     echo pa
