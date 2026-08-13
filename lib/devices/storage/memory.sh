@@ -29,7 +29,7 @@ convert() {
                     result="$VALUE_TC"
                     ;;
                 "KB")
-                    result="$(bc -q <<< "$VALUE_TC / $MULTIPLYER")"
+                    result="$(bc -q <<< "scale=1; $VALUE_TC / $MULTIPLYER")"
                     ;;
                 "GB")
                     result=$(bc -q <<< "scale=3; $VALUE_TC / $MULTIPLYER / $MULTIPLYER ")
