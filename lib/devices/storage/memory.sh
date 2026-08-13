@@ -29,10 +29,10 @@ convert() {
                     result="$VALUE_TC"
                     ;;
                 "KB")
-                    result="$(bc -q <<< "$VALUE_TC * $MULTIPLYER")"
+                    result="$(bc -q <<< "$VALUE_TC / $MULTIPLYER")"
                     ;;
                 "GB")
-                    result=$(bc -q <<< "scale=3; $VALUE_TC / $MULTIPLYER")
+                    result=$(bc -q <<< "scale=3; $VALUE_TC / $MULTIPLYER / $MULTIPLYER ")
                     ;;
             esac
     else
@@ -44,7 +44,7 @@ convert() {
 
 read_meminfo() {
     local -r FIELD="$1"
-    cat $MEM_INFO_FILE | awk -v field="$FIELD" '$0 ~ field {print $2}'
+    convert "$(cat $MEM_INFO_FILE | awk -v field="$FIELD" '$0 ~ field {print $2}')" "KB"
 }
 
 get_total_mem() {
