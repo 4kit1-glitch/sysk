@@ -58,8 +58,9 @@ get_available_mem() {
 get_used_mem() {
     # gets used memory
     local difference
-    difference="$(bc -q <<< "scale=2; $(get_total_mem | awk '{print $1}') - $(get_available_mem | cut -d' ' -f 1)")"
-    convert "$difference" "KB"
+    difference="$(bc -q <<< \
+        "scale=2; $(get_total_mem | awk '{print $1}') - $(get_available_mem | cut -d' ' -f 1)")"
+    printf "%.2f Mb" "$difference"
 }
 
 # ------ CACHE / BUFFERS -----------------
@@ -74,10 +75,7 @@ get_swap_cache() {
     # gets double buffered swap
     read_meminfo "SwapCached"
 }
-get_used_cached() {
-    # calculates and echos used cached
-    echo pa
-}
+
 # --------- SWAP-------------
 get_swap_mem() {
     # gets swap memory
@@ -90,7 +88,11 @@ get_free_swap() {
 
 get_used_swap() {
     # calculates used swap
-    echo pa
+     local difference
+    difference="$(bc -q <<< \
+        "scale=2; $(get_swap_mem | awk '{print $1}') - $(get_free_swap | cut -d' ' -f 1)")"
+    printf "%.2f Mb" "$difference"
+    
 }
 
 # -------- VIRTUAL MEMORY -----------
@@ -153,3 +155,4 @@ write_memory_config() {
 }
 
 get_used_mem
+get_used_swap
