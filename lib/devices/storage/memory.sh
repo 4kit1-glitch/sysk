@@ -117,7 +117,7 @@ get_free_virtual() {
 #----------OTHERS-------------------
 get_hardware_corrupted() {
     # reads bad ram pages
-    read_meminfo "HardwareCurrupted"
+    read_meminfo "HardwareCorrupted"
 }
 
 get_unevictable_mem() {
@@ -165,5 +165,4 @@ write_memory_config() {
         echo "anon_pages=\"$(get_anon_pages)\""
 
     } > "$MEM_CONFIG"
-
 }
