@@ -69,7 +69,7 @@ get_fan_speed() {
 }
 
 write_thermal_config() {
-    THERMAL_CONFIG="$CONFIG_DIR/thermal.conf"
+    local THERMAL_CONFIG="$CONFIG_DIR/thermal.conf"
 
     mkdir -p "$CONFIG_DIR"   
     {
