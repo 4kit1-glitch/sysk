@@ -146,7 +146,7 @@ write_memory_config() {
 
     mkdir -p "$CONFIG_DIR"
     {
-        echo "total_mem=\"$(get_mem_total)\""
+        echo "total_mem=\"$(get_total_mem)\""
         echo "available_mem=\"$(get_available_mem)\""
         echo "used_mem=\"$(get_used_mem)\""
         echo "cached_mem=\"$(get_cached_mem)\""
@@ -154,15 +154,15 @@ write_memory_config() {
         echo "swap_cache=\"$(get_swap_cache)\""
         echo "swap_mem=\"$(get_swap_mem)\""
         echo "swap_free=\"$(get_free_swap)\""
-        echo "swap_used\"$(get_used_swap)\""
-        echo "virtual_mem\"$(get_virtual_mem)\""
-        echo "used_virtual\"$(get_used_virtual)\""
-        echo "free_virtual\"$(get_free_virtual)\""
-        echo "corrupted\"$(get_hardware_corrupted)\""
-        echo "unevicted\"$(get_unevictable_mem)\""
-        echo "balloon\"$(get_balloon_mem)\""
-        echo "dirty\"$(get_dirty_mem)\""
-        echo "anon_pages\"$(get_anon_pages)\""
+        echo "swap_used=\"$(get_used_swap)\""
+        echo "virtual_mem=\"$(get_virtual_mem)\""
+        echo "used_virtual=\"$(get_used_virtual)\""
+        echo "free_virtual=\"$(get_free_virtual)\""
+        echo "corrupted=\"$(get_hardware_corrupted)\""
+        echo "unevicted=\"$(get_unevictable_mem)\""
+        echo "balloon=\"$(get_balloon_mem)\""
+        echo "dirty=\"$(get_dirty_mem)\""
+        echo "anon_pages=\"$(get_anon_pages)\""
 
     } > "$MEM_CONFIG"
 
