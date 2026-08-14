@@ -159,11 +159,11 @@ write_memory_config() {
         echo "used_virtual\"$(get_used_virtual)\""
         echo "free_virtual\"$(get_free_virtual)\""
         echo "corrupted\"$(get_hardware_corrupted)\""
-        echo "unevicted\"$(get_unevictble_mem)\""
+        echo "unevicted\"$(get_unevictable_mem)\""
         echo "balloon\"$(get_balloon_mem)\""
         echo "dirty\"$(get_dirty_mem)\""
         echo "anon_pages\"$(get_anon_pages)\""
-        
+
     } > "$MEM_CONFIG"
 
 }
