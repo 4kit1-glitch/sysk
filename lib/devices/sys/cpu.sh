@@ -171,7 +171,7 @@ get_system_uptime() {
 
 write_cpu_config() {
     # using echo instead of printf cause its easier and quick modify for consistency
-    CPU_CONFIG="$CONFIG_DIR/cpu.conf"
+    local CPU_CONFIG="$CONFIG_DIR/cpu.conf"
     mkdir -p "$CONFIG_DIR"
     {
         echo "cpu_model=\"$(get_cpu_model_info)\""
