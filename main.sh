@@ -22,6 +22,8 @@ LANG=C
 # shellcheck disable=2155
 export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${SCRIPT_DIR}/.config}
+export DUMPS_PATH=${DUMPS_PATH:-${SCRIPT_DIR}/logs}
+export DATA_PATH=${DATA_PATH:-${SCRIPT_DIR}/data}
 PATH=$PATH:/usr/xpg4/bin:/usr/sbin:/sbin:/usr/etc:/usr/libexec
 
 set -euo pipefail
@@ -56,4 +58,5 @@ main() {
     install_missing_deps
     confirm_installation
 }
-get_installed_mem_num
+get_disk_num
+scan_disks
