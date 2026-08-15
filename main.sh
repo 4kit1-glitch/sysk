@@ -47,10 +47,8 @@ for dir in "$DEVICE_DIR"/*; do
 done
 
 # source hw scripts
-for dir in "$HW_DIR"/*.sh; do 
-    for script in "$dir"/*.sh; do 
-        source "$script"
-    done
+for script in "$HW_DIR"/*.sh; do 
+    source "$script"
 done
 # check and install missing program dependencies
 
