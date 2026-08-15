@@ -8,14 +8,15 @@ mapfile -t drives < <(run_smartctl --scan | cut -d' ' -f 1)
 
 run_smartctl() {
     # specifies and runs smartctl
-    flag="$1"
-    drive="${2:---scan}"
+    local flag="$1"
+    local drive="${2:---scan}"
 
     run_privileged smartctl "$flag" "$drive"
 }
 
 scan_disks() {
-    run_smartctl --scan | cut -d' ' -f 1
+    for drive in "${drives[@]}"; do
+        printf "%s\n" "$drive"
 }
 echo "${drives[*]}"
 
