@@ -19,3 +19,5 @@
 /var
 /system
 /.config
+/data
+/.cache
