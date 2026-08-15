@@ -83,4 +83,3 @@ calculate_core_usage() {
 
     done
 }
-calculate_core_usage

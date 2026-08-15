@@ -58,5 +58,5 @@ main() {
     install_missing_deps
     confirm_installation
 }
-get_disk_num
 scan_disks
+run_quick_disk_check
