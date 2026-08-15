@@ -21,14 +21,16 @@ LANG=C
 
 # shellcheck disable=2155
 export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${SCRIPT_DIR}/.config}
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${SCRIPT_DIR}/.config}
 PATH=$PATH:/usr/xpg4/bin:/usr/sbin:/sbin:/usr/etc:/usr/libexec
 
 set -euo pipefail
 
 export CORE_DIR="$SCRIPT_DIR/lib/core"
 export DEVICE_DIR="$SCRIPT_DIR/lib/devices"
+export HW_DIR="$SCRIPT_DIR/lib/hw"
 export FEATURE_DIR="$SCRIPT_DIR/features"
+
 
 # ----------------------- source scripts ---------------------
 
@@ -44,9 +46,16 @@ for dir in "$DEVICE_DIR"/*; do
     done
 done
 
+# source hw scripts
+for dir in "$HW_DIR"/*.sh; do 
+    for script in "$dir"/*.sh; do 
+        source "$script"
+    done
+done
 # check and install missing program dependencies
 
 main() {
     install_missing_deps
     confirm_installation
 }
+get_installed_mem_num
