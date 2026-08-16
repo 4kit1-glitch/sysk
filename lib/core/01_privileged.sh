@@ -34,7 +34,7 @@ run_privileged() {
     # check if user runs as root 
     if is_root; then  
         "$@"
-        return $?   # maybe later this will be modified to show the command exit code  
+        return $?
     elif  ( ! is_root && ! is_sudo_available ); then
         printf "sudo not available\n" >&2
         printf "run as root or set up sudo\n" >&2
