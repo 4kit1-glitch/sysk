@@ -194,6 +194,20 @@ write_cpu_json() {
     local -r cpu_model="$(get_cpu_model_info)"
     local -r cores="$(get_cpu_cores)"
     local -r cpu_usage="$(get_cpu_usage)"
+    local -a load_avg
+
+    # process loadavg
+    OLDIFS=$IFS
+    IFS=":"
+    for load in $(get_load_average); do 
+        load_avg+=("$load")
+    done
+    IFS=$OLDIFS
+
+    load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
+
+
+
 
 
 
@@ -206,7 +220,8 @@ write_cpu_json() {
     jq -n --arg model "$cpu_model" \
     --argjson core "$cores" \
     --arg usage "$cpu_usage" \
-    -f $FEATURE_DIR/build_cpu.jq > "$CPU_CONFIG"
+    --argjson load "$load_avg_json" \
+    -f "$FEATURE_DIR"/build_cpu.jq > "$CPU_CONFIG"
 
 
 }
