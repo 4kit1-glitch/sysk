@@ -194,6 +194,7 @@ write_cpu_json() {
     local -r cpu_model="$(get_cpu_model_info)"
     local -r cores="$(get_cpu_cores)"
     local -r cpu_usage="$(get_cpu_usage)"
+    local -r uptime=$(get_system_uptime)
     local -a load_avg
 
     # process loadavg
@@ -204,7 +205,15 @@ write_cpu_json() {
     done
     IFS=$OLDIFS
 
+    # process uptime
+    IFS=":"
+    for time in $uptime; do
+        uptimes+=("$time")
+    done
+    
+
     local load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
+    local uptime_json=$(printf '%s\n' "${uptimes[@]}" | jq -R . | jq -s '.')
 
 
 
@@ -221,6 +230,8 @@ write_cpu_json() {
     --argjson core "$cores" \
     --arg usage "$cpu_usage" \
     --argjson load "$load_avg_json" \
+    --argjson upt "$uptime_json" \
+    --arg mcore ""
     -f "$FEATURE_DIR"/build_cpu.jq > "$CPU_CONFIG"
 
 
