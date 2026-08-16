@@ -23,7 +23,7 @@ LANG=C
 export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${SCRIPT_DIR}/.config}
 export DUMPS_PATH=${DUMPS_PATH:-${SCRIPT_DIR}/logs}
-export CACHE_PATH=${DATA_PATH:-${SCRIPT_DIR}/.cache}
+export CACHE_PATH=${CACHE_PATH:-${SCRIPT_DIR}/.cache}
 PATH=$PATH:/usr/xpg4/bin:/usr/sbin:/sbin:/usr/etc:/usr/libexec
 
 set -euo pipefail
