@@ -204,7 +204,7 @@ write_cpu_json() {
     done
     IFS=$OLDIFS
 
-    load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
+    local load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
 
 
 
