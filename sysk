@@ -57,5 +57,4 @@ main() {
     install_missing_deps
     confirm_installation
 }
-scan_disks
-run_quick_disk_check
+write_cpu_json
