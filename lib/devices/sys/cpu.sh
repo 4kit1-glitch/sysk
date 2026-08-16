@@ -2,7 +2,7 @@
 # vim: noai:ts=4:sw=4:expandtab
 # shellcheck source=/dev/null
 # shellcheck disable=2155
-# TERMAL INFO HANDLED IN temparature.sh
+# THERMAL INFO HANDLED IN temparature.sh
 #
 # there is lots of dead code in this file its becomming anoying
 
@@ -107,7 +107,7 @@ calculate_core_usage() {
     for core in "${!total_time1[@]}"; do
             core_usage[$core]=$(calculate_percent "${total_time1[$core]}" "${total_time2[$core]}" \
             "${idle_time1[$core]}" "${idle_time2[$core]}")
-            echo "$core=\"${core_usage["$core"]}\""
+            echo "$core=${core_usage["$core"]}"
 
     done
 }
@@ -124,7 +124,7 @@ get_cpu_usage() {
 
 get_most_least_core() {
     # processing requires setting IFS=':'
-    least_used=$( \
+    local least_used=$( \
         awk 'BEGIN {idle = 0; max = 0} 
         /^cpu[0-9]+/ {
             idle=$5+$6; 
@@ -132,7 +132,7 @@ get_most_least_core() {
         }
         END {printf "%s", name}' $CPU_USAGE_FILE \
     )
-    most_used=$( \
+    local most_used=$( \
         awk 'BEGIN {total = 0; max = 0; name=""}
         /^cpu[0-9]+/ {
         total=$2+$3+$4; 
@@ -165,7 +165,6 @@ get_system_uptime() {
         "$uptime_secs" "$uptime_mins" "$uptime_hrs" "$uptime_days" "$uptime_weeks" "$idle_secs"
 }
 
-# get cpu cache
 # get cpu speed
 # get core speed
 
@@ -197,26 +196,44 @@ write_cpu_json() {
     local -r uptime=$(get_system_uptime)
     local -a load_avg
 
-    # process loadavg
+    local -a core_name_arr
+    local -a core_usage_arr
+    
+    IFS='/' read -r running_procs total_procs <<< "$(get_running_total)"
+    IFS=':' read -r most_used least_used <<< "$(get_most_least_core)"
+
+
+    # process comma separated values
     OLDIFS=$IFS
     IFS=":"
     for load in $(get_load_average); do 
         load_avg+=("$load")
     done
-    IFS=$OLDIFS
 
     # process uptime
-    IFS=":"
     for time in $uptime; do
         uptimes+=("$time")
     done
-    
+    IFS=$OLDIFS
+
+    # process core info
+    IFS=$'\n'   # set ifs value to read new lines
+    for info in $(calculate_core_usage); do
+        IFS='=' read -r name usage <<< "$info"
+        core_name_arr+=("$name")
+        core_usage_arr+=("$usage")
+    done
 
     local load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
     local uptime_json=$(printf '%s\n' "${uptimes[@]}" | jq -R . | jq -s '.')
+    local core_usage_json=$(printf '%s\n' "${core_usage_arr[@]}" | jq -R . | jq -s '.')
+    local core_name_json=$(printf '%s\n' "${core_name_arr[@]}" | jq -R . | jq -s '.')
 
 
-
+    local core_usage_json=$(jq -n \
+    --argjson names "$core_name_json" \
+    --argjson usages "$core_usage_json"\
+    '[$names, $usages] | transpose | map({(.[0]): (.[1])}) | add')
 
 
 
@@ -231,7 +248,11 @@ write_cpu_json() {
     --arg usage "$cpu_usage" \
     --argjson load "$load_avg_json" \
     --argjson upt "$uptime_json" \
-    --arg mcore ""
+    --arg most "$most_used"\
+    --arg least "$least_used"\
+    --argjson coreu "$core_usage_json" \
+    --arg runningp "$running_procs" \
+    --arg totalp "$total_procs" \
     -f "$FEATURE_DIR"/build_cpu.jq > "$CPU_CONFIG"
 
 
