@@ -9,7 +9,7 @@ declare -r required_deps=(
     "sed" "awk" "grep" "wc" "free"
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "pactl"
-    "aplay" "upower" "df" "info"
+    "aplay" "upower" "df" "info" "jq"
 )
 
 # variable stores the missing dependencies
