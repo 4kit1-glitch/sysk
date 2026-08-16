@@ -197,17 +197,16 @@ write_cpu_json() {
 
 
 
+
+
     # uses jq to create cpu.json
     local CPU_CONFIG="$CONFIG_DIR/cpu.json"
     mkdir -p "$CONFIG_DIR"
 
-    jq -n --arg model "$cpu_model" --argjson core "$cores" --arg usage "$cpu_usage" \
-        '{
-            cpu_model_name: $model, 
-            cores: $core,
-            usage: $usage
-            
-            
-        }' > "$CPU_CONFIG"
+    jq -n --arg model "$cpu_model" \
+    --argjson core "$cores" \
+    --arg usage "$cpu_usage" \
+    -f $FEATURE_DIR/build_cpu.jq > "$CPU_CONFIG"
+
 
 }
