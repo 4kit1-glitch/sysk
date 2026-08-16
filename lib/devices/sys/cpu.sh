@@ -6,7 +6,7 @@
 #
 # there is lots of dead code in this file its becomming anoying
 
-readonly CONFIG_DIR="$XDG_CONFIG_HOME"
+readonly CONFIG_DIR="$CACHE_PATH/sysk"
 
 # static info
 readonly CPU_INFO_FILE="/proc/cpuinfo"
@@ -18,7 +18,7 @@ get_cpu_model_info() {
     [[ -f "$CPU_INFO_FILE" ]] && { \
         local model_name="$(cat $CPU_INFO_FILE | \
         grep -i "model name" | \
-        awk -F':' '{print $2}' | head -1)"
+        awk -F': ' '{print $2}' | head -1)"
     }
     printf "%s" "$model_name"
 }
@@ -187,5 +187,27 @@ write_cpu_config() {
         echo "total_procs=\"$total_procs\""
         
     } > "$CPU_CONFIG" 
+
+}
+
+write_cpu_json() {
+    local -r cpu_model="$(get_cpu_model_info)"
+    local -r cores="$(get_cpu_cores)"
+    local -r cpu_usage="$(get_cpu_usage)"
+
+
+
+    # uses jq to create cpu.json
+    local CPU_CONFIG="$CONFIG_DIR/cpu.json"
+    mkdir -p "$CONFIG_DIR"
+
+    jq -n --arg model "$cpu_model" --argjson core "$cores" --arg usage "$cpu_usage" \
+        '{
+            cpu_model_name: $model, 
+            cores: $core,
+            usage: $usage
+            
+            
+        }' > "$CPU_CONFIG"
 
 }
