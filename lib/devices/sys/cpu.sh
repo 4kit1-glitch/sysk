@@ -168,27 +168,6 @@ get_system_uptime() {
 # get cpu speed
 # get core speed
 
-write_cpu_config() {
-    # using echo instead of printf cause its easier and quick modify for consistency
-    local CPU_CONFIG="$CONFIG_DIR/cpu.conf"
-    mkdir -p "$CONFIG_DIR"
-    {
-        echo "cpu_model=\"$(get_cpu_model_info)\""
-        echo "cpu_cores=\"$(get_cpu_cores)\""
-        echo "cpu_usage=\"$(get_cpu_usage)\""
-        echo "uptime=\"$(get_system_uptime)\""
-        echo "load_average=\"$(get_load_average)\""
-        echo "most_least_core=\"$(get_most_least_core)\"" # joining the info makes more sense than having to call the function twice
-        calculate_core_usage
-
-        IFS='/' read -r running_procs total_procs <<< "$(get_running_total)"
-        echo "running_procs=\"$running_procs\""
-        echo "total_procs=\"$total_procs\""
-        
-    } > "$CPU_CONFIG" 
-
-}
-
 write_cpu_json() {
     local -r cpu_model="$(get_cpu_model_info)"
     local -r cores="$(get_cpu_cores)"
@@ -223,6 +202,7 @@ write_cpu_json() {
         core_name_arr+=("$name")
         core_usage_arr+=("$usage")
     done
+    IFS=$OLDIFS
 
     local load_avg_json=$(printf '%s\n' "${load_avg[@]}" | jq -R . | jq -s '.')
     local uptime_json=$(printf '%s\n' "${uptimes[@]}" | jq -R . | jq -s '.')
