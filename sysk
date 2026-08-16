@@ -52,7 +52,6 @@ done
 for script in "$HW_DIR"/*.sh; do 
     source "$script"
 done
-# check and install missing program dependencies
 
 main() {
     install_missing_deps
