@@ -27,10 +27,8 @@ convert_to_gb() {
     }
 }
 
-disk_type_check() {
-    # tests disk type
-    echo pass
-
+get_drive_count() {
+    printf "%d" "${#drives[@]}" || return "$ERR_FAILURE"
 }
 
 get_drives() {
@@ -40,17 +38,36 @@ get_drives() {
     done
 }
 
-get_drive_size() {
-    # prints the size of a specific drive
-    echo pass
+
+get_disk_type() {
+    # tests disk type
+    local -r DRIVE_NAME="$1"
+    local -r ROTATIONAL_FILE="$DRIVE_DIR/$DRIVE_NAME/queue/rotational"
+    local -r rot_value=$(cat "$ROTATIONAL_FILE")
+
+    if (( rot_value == 0 )); then 
+        printf "SOLID STATE DRIVE"
+    else
+        printf "Rotational disk drive"
+    fi
+
 }
 
-get_used_drive_space() {
+get_drive_size() {
+    # prints the size of a specific drive
+    local -r DRIVE_NAME="$1"
+    local -r size_file="$DRIVE_DIR/$DRIVE_NAME/size"
+    local -r size="$(cat "$size_file")"
+
+    printf "%s" "$( convert_to_gb "$size")" || return "$ERR_FAILURE"
+}
+
+get_used_drive_size() {
     # get already used space
     echo pass
 }
 
-get_free_drive_space() {
+get_free_drive_size() {
     echo pass
 }
 
@@ -68,3 +85,4 @@ write_disk_json() {
     # creates disk.json 
     echo pass
 }
+
