@@ -67,22 +67,6 @@ get_fan_speed() {
         done
     fi
 }
-
-write_thermal_config() {
-    local THERMAL_CONFIG="$CONFIG_DIR/thermal.conf"
-
-    mkdir -p "$CONFIG_DIR"   
-    {
-        echo "avg_temp=\"$(get_avg_temp)\""
-        echo "thermal_zones=\"$SYSTEM_THERMAL_ZONES\""
-        # zone temparatures
-        get_zone_temps
-        echo "fan_status=\"$(get_fan_status)\""
-        echo "fan_speed=\"$(get_fan_speed)\""        
-    
-    } > "$THERMAL_CONFIG"
-}
-
 write_thermal_json() {
     # multiple valiables needs to be fixed its unessessary
     # left out fan zone temps for now will do proper testing 
