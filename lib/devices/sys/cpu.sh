@@ -124,6 +124,8 @@ get_cpu_usage() {
 
 get_most_least_core() {
     # processing requires setting IFS=':'
+    # this approach is wrong 
+    # Todo: fix this function
     local least_used=$( \
         awk 'BEGIN {idle = 0; max = 0} 
         /^cpu[0-9]+/ {
@@ -164,9 +166,6 @@ get_system_uptime() {
     printf "%s:%s:%s:%s:%s:%s" \
         "$uptime_secs" "$uptime_mins" "$uptime_hrs" "$uptime_days" "$uptime_weeks" "$idle_secs"
 }
-
-# get cpu speed
-# get core speed
 
 write_cpu_json() {
     local -r cpu_model="$(get_cpu_model_info)"
