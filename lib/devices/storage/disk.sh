@@ -12,8 +12,6 @@ readonly DRIVE_DIR="/sys/block"
 
 mapfile -t drives < <(find "$DRIVE_DIR"/* -maxdepth 1 -printf "%f\n" | grep -Ev "(^loop|ram|zram)") 
 
-
-# to read
 convert_to_gb() {
     # converts VALUES in 512 - byte sectors to gb
     local -r MULTIPLYER=512
