@@ -8,7 +8,7 @@
 # usb drives
 
 readonly DRIVE_DIR="/sys/block"
-readonly DISK_STATS_FILE="/proc/diskstats"
+
 
 mapfile -t drives < <(find "$DRIVE_DIR"/* -maxdepth 1 -printf "%f\n" | grep -Ev "(^loop|ram|zram)") 
 
@@ -105,24 +105,18 @@ get_used_drive_size() {
     echo pass
 }
 
-get_usb_drives() {
-    # prints usb drives
-    local model_file
-    for drive in "${drives[@]}"; do
-        model_file=$DRIVE_DIR/$drive/device/model
-        if [[ $(is_removable "$drive") == "REMOVABLE DISK" ]]; then
-            cat "$model_file" || printf "/dev/%s" "$drive"
-        fi
-    done
-}
-
 get_drive_partitions() {
     # prints partitions for every drive
-    echo pass
+    local drive="$1"
+    local -r drive_path="$DRIVE_DIR/$drive/$drive"
+    find "$drive_path"* -maxdepth 0
 }
 
 write_disk_json() {
-    # creates disk.json 
-    echo pass
+    local DISK_CONFIG="$CONFIG_DIR/disk_$DATE.json"
+    mkdir -p "$CONFIG_DIR"
+    { 
+        lsblk --output=name,size,fsuse%,fsused,ro,mountpoints,model,type -J | \
+        jq '.blockdevices | map(select(.name | test("^(ram|zram|loop)"; "i") | not))'
+    } > "$DISK_CONFIG"
 }
-
