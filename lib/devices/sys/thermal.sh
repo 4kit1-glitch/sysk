@@ -24,7 +24,7 @@ convert_to_celsius() {
     else
         printf "not a digit skipping!!!!" >&2
     fi
-    printf "%.2f*C" "$celcius" 2> /dev/null
+    printf "%.2f" "$celcius" 2> /dev/null
 }
 get_avg_temp() {
     # general system temparature
@@ -41,14 +41,13 @@ get_avg_temp() {
 }
 get_zone_temps() {
     for zone in "$SYSTEM_THERMAL_ZONE_PATH"*; do 
-        echo "$(cat "$zone"/type)=\"$(convert_to_celsius \
-            "$(cat $zone/temp  2> /dev/null || { printf "N/A"; })")\""
+        echo "$(cat "$zone"/type)=$(convert_to_celsius \
+            "$(cat $zone/temp  2> /dev/null || { printf "N/A"; })")"
     done
 }
 
-get_fan_status() {
+get_fan_zones() {
     # number of fans
-    # could not properly get fan info like speed and ac 
     local fan_zones="$(find "$SYSTEM_FAN_INFO_PATH"/hwmon*/fan*_input 2> /dev/null | wc -l)"
     if (( fan_zones == 0 )); then
         printf "N/A"
@@ -58,7 +57,7 @@ get_fan_status() {
 }
 
 get_fan_speed() {
-    local zones="$(get_fan_status)"
+    local zones="$(get_fan_zones)"
     if [[ $zones == "N/A" ]]; then
         printf "N/A"
     else
@@ -81,4 +80,14 @@ write_thermal_config() {
         echo "fan_speed=\"$(get_fan_speed)\""        
     
     } > "$THERMAL_CONFIG"
+}
+
+write_thermal_json() {
+    local -r average_temp="$(get_avg_temp)"
+    local -r fan_zones="$(get_fan_zones)"
+    local -r 
+    local THERMAL_CONFIG="$CONFIG_DIR/thermal_$DATE.json"
+    mkdir -p $CONFIG_DIR
+
+    jq -n --arg avtemp 
 }
