@@ -10,7 +10,7 @@
 readonly DRIVE_DIR="/sys/block"
 readonly DISK_STATS_FILE="/proc/diskstats"
 
-mapfile -t drives < <(find "$DRIVE_DIR"/* -maxdepth 1 -printf "%f\n" | grep -Ev "(loops|ram|zram)") 
+mapfile -t drives < <(find "$DRIVE_DIR"/* -maxdepth 1 -printf "%f\n" | grep -Ev "(^loop|ram|zram)") 
 
 
 # to read
@@ -45,12 +45,33 @@ get_disk_type() {
     local -r ROTATIONAL_FILE="$DRIVE_DIR/$DRIVE_NAME/queue/rotational"
     local -r rot_value=$(cat "$ROTATIONAL_FILE")
 
+    [[ -f $ROTATIONAL_FILE ]] || {
+        printf "N/A"
+        return "$ERR_NOT_FOUND"
+    }
+
     if (( rot_value == 0 )); then 
         printf "SOLID STATE DRIVE"
     else
-        printf "Rotational disk drive"
+        printf "ROTATIONAL DISK DRIVE"
     fi
+}
 
+is_removable() {
+    local -r DRIVE_NAME="$1"
+    local -r REMOVABLE_FILE="$DRIVE_DIR/$DRIVE_NAME/removable"
+    local -r rm_value=$(cat "$REMOVABLE_FILE")
+
+    [[ -f $REMOVABLE_FILE ]] || {
+        printf "N/A"
+        return "$ERR_NOT_FOUND"
+    }
+
+    if (( rm_value == 0 )); then 
+        printf "INTERNAL DISK"
+    else
+        printf "REMOVABLE DISK"
+    fi
 }
 
 get_drive_size() {
@@ -62,18 +83,37 @@ get_drive_size() {
     printf "%s" "$( convert_to_gb "$size")" || return "$ERR_FAILURE"
 }
 
+get_ro_value() {
+    local -r DRIVE_NAME="$1"
+    local -r RO_FILE="$DRIVE_DIR/$DRIVE_NAME/removable"
+
+    [[ -f $RO_FILE ]] || {
+        printf "N/A"
+        return "$ERR_NOT_FOUND"
+    }
+
+    local -r ro_value=$(cat "$REMOVABLE_FILE")
+    
+    if (( ro_value == 0 )); then 
+        printf "rw"
+    else
+        printf "r"
+    fi
+}
 get_used_drive_size() {
     # get already used space
     echo pass
 }
 
-get_free_drive_size() {
-    echo pass
-}
-
 get_usb_drives() {
     # prints usb drives
-    echo pass
+    local model_file
+    for drive in "${drives[@]}"; do
+        model_file=$DRIVE_DIR/$drive/device/model
+        if [[ $(is_removable "$drive") == "REMOVABLE DISK" ]]; then
+            cat "$model_file" || printf "/dev/%s" "$drive"
+        fi
+    done
 }
 
 get_drive_partitions() {
