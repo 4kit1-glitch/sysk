@@ -6,8 +6,6 @@
 #
 # there is lots of dead code in this file its becomming anoying
 
-readonly CONFIG_DIR="$CACHE_PATH/sysk"
-
 # static info
 readonly CPU_INFO_FILE="/proc/cpuinfo"
 readonly LOAD_INFO_FILE="/proc/loadavg"
@@ -219,7 +217,7 @@ write_cpu_json() {
 
 
     # uses jq to create cpu.json
-    local CPU_CONFIG="$CONFIG_DIR/cpu.json"
+    local CPU_CONFIG="$CONFIG_DIR/cpu_$DATE.json"
     mkdir -p "$CONFIG_DIR"
 
     jq -n --arg model "$cpu_model" \
