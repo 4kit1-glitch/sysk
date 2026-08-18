@@ -46,8 +46,9 @@ get_zone_temps() {
     done
 }
 
-get_fan_zones() {
+get_fan_status() {
     # number of fans
+    # could not properly get fan info like speed and ac 
     local fan_zones="$(find "$SYSTEM_FAN_INFO_PATH"/hwmon*/fan*_input 2> /dev/null | wc -l)"
     if (( fan_zones == 0 )); then
         printf "N/A"
@@ -57,7 +58,7 @@ get_fan_zones() {
 }
 
 get_fan_speed() {
-    local zones="$(get_fan_zones)"
+    local zones="$(get_fan_status)"
     if [[ $zones == "N/A" ]]; then
         printf "N/A"
     else
@@ -83,11 +84,44 @@ write_thermal_config() {
 }
 
 write_thermal_json() {
-    local -r average_temp="$(get_avg_temp)"
-    local -r fan_zones="$(get_fan_zones)"
-    local -r 
+    # multiple valiables needs to be fixed its unessessary
+    # left out fan zone temps for now will do proper testing 
     local THERMAL_CONFIG="$CONFIG_DIR/thermal_$DATE.json"
-    mkdir -p $CONFIG_DIR
+    local avg_temp=$(get_avg_temp)
+    local zone_temps=$(get_zone_temps)
+    local fan_stats=$(get_fan_status)
+    local fan_speed=$(get_fan_speed)
 
-    jq -n --arg avtemp 
+
+    local -a sensors
+    local -a temps
+
+    OLDIFS=$IFS
+    IFS=$'\n'
+    for zone_temp in $zone_temps; do 
+        IFS='=' read -r sens temp <<< "$zone_temp"
+        sensors+=("$sens")
+        temps+=("$temp")
+    done
+    IFS=$OLDIFS
+
+    local sensors_json=$(printf "%s\n" "${sensors[@]}" | jq -R . | jq -s '.')
+    local temps_json=$(printf "%s\n" "${temps[@]}" | jq -R . | jq -s '.')
+
+
+    local zone_temps_json=$(jq -n \
+    --argjson names "$sensors_json"\
+    --argjson values "$temps_json" \
+    '[$names, $values] | transpose | map({(.[0]): (.[1])}) | add')
+
+
+    
+    mkdir -p "$CONFIG_DIR"
+
+    jq -n --argjson atemp "$avg_temp" \
+    --argjson zone_count "$SYSTEM_THERMAL_ZONES" \
+    --argjson ztemps "$zone_temps_json" \
+    --arg fan_status "$fan_stats" \
+    --arg fan_spd "$fan_speed" \
+    -f "$FEATURE_DIR"/build_thermal.jq > "$THERMAL_CONFIG"
 }

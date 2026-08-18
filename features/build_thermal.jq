@@ -1,9 +1,9 @@
 {
-    average_temp: 1    
-    thermal_zones: 1
-    zone_temparatures: 1
+    average_temp: $atemp,    
+    thermal_zones: $zone_count,
+    zone_temparatures: $ztemps,
     cooling: {
-        fan_zones: 1
-        fan_speed: 1
-    }
+        fan_zones: $fan_status,
+        fan_speed: $fan_spd
+    },
 }
