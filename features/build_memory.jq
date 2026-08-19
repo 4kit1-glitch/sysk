@@ -14,12 +14,12 @@
     },
     virtual: {
         total_virtual: $virtual_mem,
-        used_virtual: $used_virtual,
-        free_virtual: $free_virtual
+        virtual_used: $uvirtual,
+        virtual_free: $free_virtual
     },
     corrupted: $corrupted,
     balloon: $balloon,
-    dirty: $diry,
+    dirty: $dirty,
     unevicted: $unevicted,
     anon_pages: $anon_pages
 }
