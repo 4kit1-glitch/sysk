@@ -166,3 +166,29 @@ write_memory_config() {
 
     } > "$MEM_CONFIG"
 }
+
+
+write_memory_json() {
+    local MEM_CONFIG="$CONFIG_DIR/memory_$DATE.json"
+
+    mkdir -p "$CONFIG_DIR"
+
+    jq --args total_mem "$(get_total_mem)" \
+        --args available_mem "$(get_available_mem)" \
+        --args used_mem"$(get_used_mem)" \
+        --args cached_mem"$(get_cached_mem)" \
+        --args buffer "$(get_buffered_mem)" \
+        --args swap_cache "$(get_swap_cache)"\
+        --args swap_mem "$(get_swap_mem)" \
+        --args swap_free "$(get_free_swap)" \
+        --args swap_used "$(get_used_swap)" \
+        --args virtual_mem"$(get_virtual_mem)" \
+        --args used_virtual "$(get_used_virtual)" \
+        --args free_virtual "$(get_free_virtual)" \
+        --args corrupted "$(get_hardware_corrupted)" \
+        --args unevicted "$(get_unevictable_mem)" \
+        --args balloon "$(get_balloon_mem)" \
+        --args dirty "$(get_dirty_mem)" \
+        --args anon_pages "$(get_anon_pages)" \
+    -f "$FEATURE_DIR"/build_memory.jq > "$MEM_CONFIG"
+}
