@@ -33,7 +33,7 @@ convert() {
             esac
     else
         printf "Invalid use" >&2
-        exit 2
+        return "$ERR_BAD_USAGE"
     fi
     printf "%s Mb" "$result"
 }
@@ -42,7 +42,10 @@ convert() {
 read_meminfo() {
     # reads and extract appropraite data from /proc/meminfo
     local -r FIELD="$1"
-    convert "$(cat $MEM_INFO_FILE | awk -v field="$FIELD" '$0 ~ "^"field {print $2}')" "KB"
+    convert "$(cat $MEM_INFO_FILE | awk -v field="$FIELD" '$0 ~ "^"field {print $2}')" "KB" || {
+        printf "N/A"
+        return "$ERR_FAILURE"
+    }
 }
 
 
@@ -171,24 +174,25 @@ write_memory_config() {
 write_memory_json() {
     local MEM_CONFIG="$CONFIG_DIR/memory_$DATE.json"
 
+
     mkdir -p "$CONFIG_DIR"
 
-    jq --args total_mem "$(get_total_mem)" \
-        --args available_mem "$(get_available_mem)" \
-        --args used_mem"$(get_used_mem)" \
-        --args cached_mem"$(get_cached_mem)" \
-        --args buffer "$(get_buffered_mem)" \
-        --args swap_cache "$(get_swap_cache)"\
-        --args swap_mem "$(get_swap_mem)" \
-        --args swap_free "$(get_free_swap)" \
-        --args swap_used "$(get_used_swap)" \
-        --args virtual_mem"$(get_virtual_mem)" \
-        --args used_virtual "$(get_used_virtual)" \
-        --args free_virtual "$(get_free_virtual)" \
-        --args corrupted "$(get_hardware_corrupted)" \
-        --args unevicted "$(get_unevictable_mem)" \
-        --args balloon "$(get_balloon_mem)" \
-        --args dirty "$(get_dirty_mem)" \
-        --args anon_pages "$(get_anon_pages)" \
-    -f "$FEATURE_DIR"/build_memory.jq > "$MEM_CONFIG"
+    jq -n --arg total_mem "$(get_total_mem)" \
+    --arg available_mem "$(get_available_mem)" \
+    --arg used_mem "$(get_used_mem)" \
+    --arg cached_mem "$(get_cached_mem)" \
+    --arg buffer "$(get_buffered_mem)" \
+    --arg swap_cache "$(get_swap_cache)"\
+    --arg swap_mem "$(get_swap_mem)" \
+    --arg swap_free "$(get_free_swap)" \
+    --arg swap_used "$(get_used_swap)" \
+    --arg virtual_mem "$(get_virtual_mem)" \
+    --arg uvirtual "$(get_used_virtual)" \
+    --arg free_virtual "$(get_free_virtual)" \
+    --arg corrupted "$(get_hardware_corrupted)" \
+    --arg unevicted "$(get_unevictable_mem)" \
+    --arg balloon "$(get_balloon_mem)" \
+    --arg dirty "$(get_dirty_mem)" \
+    --arg anon_pages "$(get_anon_pages)" \
+    -f "$FEATURE_DIR/build_memory.jq" > "$MEM_CONFIG"
 }
