@@ -96,7 +96,8 @@ write_hardware_json() {
     local HARDWARE_CONFIG="$CONFIG_DIR/hardware_$DATE.json"
 
     mkdir -p "$CONFIG_DIR"
-    jq -n --arg vendor "$(get_vendor)" \
+    jq -n --arg dump "$DMI_CACHE" \
+    --arg vendor "$(get_vendor)" \
     --arg firmware_version "$(get_firmware_version)" \
     --arg release_date "$(get_release_date)" \
     --arq manufacturer "$(get_manufacturer)" \
@@ -108,5 +109,7 @@ write_hardware_json() {
     --arg processor_version "$(get_processor_version)" \
     --arg max_sp "$(get_max_speed)" \
     --arg current_sp "$(get_current_speed)" \
+    --arg mem_num "$(get_installed_mem_num)" \
+    --arg max_capacity "$(get_maximum_capacity)" \
     -f "$FEATURE_DIR"/build_hardware.jq > "$HARDWARE_CONFIG"
 }
