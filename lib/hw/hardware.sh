@@ -66,7 +66,7 @@ get_serial_number() {
 }
 
 # ------- processor info -----------
-get_processorr_type() {
+get_processor_type() {
     read_dmi 4 "Type"
 }
 
@@ -100,9 +100,8 @@ write_hardware_json() {
     --arg vendor "$(get_vendor)" \
     --arg firmware_version "$(get_firmware_version)" \
     --arg release_date "$(get_release_date)" \
-    --arq manufacturer "$(get_manufacturer)" \
+    --arg manufacturer "$(get_manufacturer)" \
     --arg prod_name "$(get_product_name)" \
-    --arg sys_vendor "$(get_system_vendor)" \
     --arg serial_num "$(get_serial_number)" \
     --arg processor_type "$(get_processor_type)" \
     --arg processor_family "$(get_processor_family)" \
