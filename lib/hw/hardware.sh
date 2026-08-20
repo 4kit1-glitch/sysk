@@ -17,10 +17,11 @@ readonly DMI_CACHE="$DUMPS_PATH/dmi_$DATE.cache"
 
 init_dmi_cache() {
     # the info gotten is kinda static meaning tracking with date deosn't is not proper 
-    [[ ! -f "$DMI_CACHE" ]] && run_privileged dmidecode -t 0,1,2,4,16,17,22,39 > "$DMI_CACHE" || {
-        printf "cache already initialized...\n" >&2
-        return "$ERR_FAILURE"
-    }
+    if [[ ! -f "$DMI_CACHE" ]]; then
+        run_privileged dmidecode -t 0,1,2,4,16,17,22,39 > "$DMI_CACHE"
+    else 
+        return "$ERR_SUCCESS"
+    fi
 }
 read_dmi() {
     local -r TYPE="$1"
@@ -94,6 +95,11 @@ get_maximum_capacity() {
 
 write_hardware_json() {
     local HARDWARE_CONFIG="$CONFIG_DIR/hardware_$DATE.json"
+
+    init_dmi_cache || { 
+        echo "failed to initialize cache" >&2
+        return "$ERR_FAILED" 
+    }
 
     mkdir -p "$CONFIG_DIR"
     jq -n --arg dump "$DMI_CACHE" \

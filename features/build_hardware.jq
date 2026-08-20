@@ -13,6 +13,7 @@
     processor: {
         Type: $processor_type,
         Version: $processor_version,
+        Family: $processor_family,
         max_speed: $max_sp,
         current_sp: $current_sp
     },
