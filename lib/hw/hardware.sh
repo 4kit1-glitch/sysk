@@ -77,17 +77,36 @@ get_processor_version() {
     read_dmi 4 "Version"
 }
 get_max_speed() {
-    read_dmi 4
+    read_dmi 4 "Max"
 }
 get_current_speed() {
-    read_dmi 4
+    read_dmi 4 "Current"
 }
 
 #---------------physical memory space-----------------------------
-# processing dmidecode
+
 get_installed_mem_num() { 
     read_dmi 16 "Number" 
 }
 get_maximum_capacity() {
     read_dmi 16 "Maximum"
+}
+
+write_hardware_json() {
+    local HARDWARE_CONFIG="$CONFIG_DIR/hardware_$DATE.json"
+
+    mkdir -p "$CONFIG_DIR"
+    jq -n --arg vendor "$(get_vendor)" \
+    --arg firmware_version "$(get_firmware_version)" \
+    --arg release_date "$(get_release_date)" \
+    --arq manufacturer "$(get_manufacturer)" \
+    --arg prod_name "$(get_product_name)" \
+    --arg sys_vendor "$(get_system_vendor)" \
+    --arg serial_num "$(get_serial_number)" \
+    --arg processor_type "$(get_processor_type)" \
+    --arg processor_family "$(get_processor_family)" \
+    --arg processor_version "$(get_processor_version)" \
+    --arg max_sp "$(get_max_speed)" \
+    --arg current_sp "$(get_current_speed)" \
+    -f "$FEATURE_DIR"/build_hardware.jq > "$HARDWARE_CONFIG"
 }
