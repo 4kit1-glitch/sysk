@@ -2,13 +2,12 @@
     DUMP_FILE: $dump,
     firmware: {
         Vendor: $vendor,
-        Version: $version,
+        Version: $firmware_version,
         Release_Date: $release_date
     },
     system: {
         Manufacturer: $manufacturer,
-        Product_name: $product_name,
-        Vendor: $sys_vendor,
+        Product_name: $prod_name,
         Serial: $serial_num
     },
     processor: {
