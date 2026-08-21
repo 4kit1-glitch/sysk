@@ -60,3 +60,4 @@ main() {
     install_missing_deps
     confirm_installation
 }
+write_sound_json
