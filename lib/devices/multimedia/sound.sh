@@ -1,40 +1,38 @@
 #!/usr/bin/env bash
-
-
-# the programs used are presence are already verified in check_deps.sh
-#------------ vars ------------------------
-declare -ri output_count=$(pactl list sinks short | wc -l)
-declare -ri input_count=$(pactl list sources short | wc -l)
-declare -ri bluetooth_count=$(pactl list sinks short | grep "bluez" | wc -l)
-declare -r active_device="$(pactl list sinks short  | grep -Ei "running" |
- awk '{printf "%s is active\n", $2} END{if(NR==0) printf "No audio device active\n"}')"
-
-#---------------- Getters   -----------------
-
-get_sound_output_info() {
-    printf "Sound output information\n"
-    printf "no of output sinks: %d\n" "$output_count"
-    sound_output_info=$(
-        pactl list sinks | sed -E -n -f $FEATURE_DIR/sound_info.sed | 
-        sed '/State/i\device'
-    )
-     printf "%s\n" "$sound_output_info"
+# vim: noai:ts=4:sw=4:expandtab
+# shellcheck source=/dev/null
+#
+    
+run_pactl_list() {
+    local OPTION1="$1"
+    local OPTION2="${2:-}"
+    # shellcheck disable=2086
+    pactl list $OPTION1 $OPTION2 || {
+        echo "pactl failed..." >&2
+        return 0
+    }
+}
+run_pactl() {
+    local OPTION1="${1:-}"
+    pactl "$OPTION1" || {
+        echo "pactl failed..." >&2
+    }
 }
 
-get_sound_input_sources() {
-    printf "Sound input information\n"
-    printf "no of input sinks: %d\n" "$input_count"
-    sound_input_info=$(
-        pactl list sources | sed -E -n -f $FEATURE_DIR/sound_info.sed |
-        sed '/state/i\device'
-    )
-    printf "%s/n" "$sound_input_info"                                                                                                                                                                                                                                                                                                                                                  
+get_default_sink() {
+    run_pactl get-default-sink
 }
 
-#------------ processes -----------------------
-get_audio_info_summary() {
-    printf "output devices connected: %d\n" "$output_count"
-    printf "input devices connected: %d\n" "$input_count"
-    printf "bluetooth divices: %d\n" "$bluetooth_count"
-    printf "active device: %s\n" "$active_device" 
+get_default_source() {
+    run_pactl get-default-source
+}
+
+write_sink_json() {
+    
+    mkdir -p $CONFIG_DIR
+    pactl -f json list sinks | \
+    jq -f "$FEATURE_DIR"/build_sound.jq
+}
+write_source_json() {
+    echo pass
 }
