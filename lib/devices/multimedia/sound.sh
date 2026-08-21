@@ -7,7 +7,7 @@ run_pactl_list() {
     local OPTION1="$1"
     local OPTION2="${2:-}"
     # shellcheck disable=2086
-    pactl list $OPTION1 $OPTION2 || {
+    pactl -f json list $OPTION1 $OPTION2 || {
         echo "pactl failed..." >&2
         return 0
     }
@@ -28,11 +28,16 @@ get_default_source() {
 }
 
 write_sink_json() {
-    
-    mkdir -p $CONFIG_DIR
-    pactl -f json list sinks | \
-    jq -f "$FEATURE_DIR"/build_sound.jq
+    run_pactl_list sinks | \
+    jq -f "$FEATURE_DIR"/build_sound.jq || {
+        echo "sink write failed.." >&2
+        return "$ERR_SUCCESS" 
+    }
 }
 write_source_json() {
-    echo pass
+    run_pactl_list sources | \
+    jq -f "$FEATURE_DIR"/build_sound.jq || {
+        echo "source write failed.." >&2
+        return "$ERR_SUCCESS" 
+    }
 }
