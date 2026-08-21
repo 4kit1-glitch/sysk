@@ -10,7 +10,7 @@ declare -r required_deps=(
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "pactl"
     "aplay" "upower" "df" "info" "jq"
-    "smartmontools"
+    "smartmontools" "acpi" "pactl"
 )
 
 # variable stores the missing dependencies
