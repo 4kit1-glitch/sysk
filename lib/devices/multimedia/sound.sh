@@ -54,5 +54,4 @@ write_sound_json() {
         echo "sound write failed .." >&2
         return "$ERR_FAILURE"
     }
-
 }
