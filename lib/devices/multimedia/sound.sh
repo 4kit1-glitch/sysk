@@ -49,7 +49,9 @@ write_sound_json() {
         jq -n \
         --slurpfile sinks <(write_sink_json 2> /dev/null ) \
         --slurpfile sources <(write_source_json 2> /dev/null ) \
-        '{sinks: $sinks[0], sources: $sources[0]}'
+        --arg dsource "$(get_default_source)" \
+        --arg dsink "$(get_default_sink)" \
+        '{sinks: $sinks[0], sources: $sources[0], defaults: {source: $dsource, sink: $dsink}}'
     } > "$SOUND_CONFIG_FILE" || {
         echo "sound write failed .." >&2
         return "$ERR_FAILURE"
