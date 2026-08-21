@@ -41,3 +41,18 @@ write_source_json() {
         return "$ERR_SUCCESS" 
     }
 }
+write_sound_json() {
+    local SOUND_CONFIG_FILE="$CONFIG_DIR/sound_$DATE.json"
+
+    mkdir -p "$CONFIG_DIR"
+    {
+        jq -n \
+        --slurpfile sinks <(write_sink_json 2> /dev/null ) \
+        --slurpfile sources <(write_source_json 2> /dev/null ) \
+        '{sinks: $sinks[0], sources: $sources[0]}'
+    } > "$SOUND_CONFIG_FILE" || {
+        echo "sound write failed .." >&2
+        return "$ERR_FAILURE"
+    }
+
+}
