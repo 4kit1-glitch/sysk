@@ -1,0 +1,1 @@
+[.[] | {Index: .index, State: .state, Name: .name, Desription: .description, Mute: .mute, Volume: .volume}]
