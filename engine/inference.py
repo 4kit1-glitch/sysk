@@ -9,6 +9,11 @@ from json import load, dump
 from yaml import safe_load
 
 DATE = environ.get("DATE")
-PROG_PATH = environ.get("SCRIPT_DIR")   # program path
+PROGRAM_PATH = environ.get("SCRIPT_DIR")   # program path
+CACHE_PATH = environ.get("CACHE_PATH")
+ENGINE_DIR = environ.get("ENGINE_DIR")
+RULE_DIR = environ.get("RULE_DIR")
+RESULT_DIR = environ.get("RESULT_DIR")
+
 
 
