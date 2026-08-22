@@ -1,0 +1,45 @@
+# Module: memory
+# Description: rule base for memory info
+# Version: 0.01
+
+module: memory
+
+# check interval
+check_interval: 10
+
+system_vars:
+  installed_num: "auto"
+  max_capacity: "auto"
+
+fields:
+  - name: used_memory
+  description: "used memory in mb"
+  type: "Mb"
+  base_value: "total_memory"
+  warning_multiplier: 0.90
+  critical_multiplier: 0.95
+  unit: "Mb"
+
+  - name: swap_used
+  description: "used swap in mb"
+  type: "Mb"
+  base_value: "swap_total"
+  warning_multiplier: 0.50
+  critical_multiplier: 0.70
+  unit: "Mb"
+
+  - name: corrupted
+  description: "corrupted memory size"
+  type: "Mb"
+  base_value: "total_memory"
+  warning_multiplier: 0.15
+  critical_multiplier: 0.2
+  unit: "Mb"
+
+  - name: balloon
+  description: "used by virtual machines"
+  type: "Mb"
+  base_value: "total_memory"
+  warning_multiplier: 0.5
+  critical_multiplier: 0.6
+  unit: "Mb"
