@@ -10,7 +10,7 @@ check_interval: 10
 system_vars:
   disk_count: "auto"
 
-field: 
+fields: 
   - name: disk_used_percentage
   type: "percent"
   base_value: 88
