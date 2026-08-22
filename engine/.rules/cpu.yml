@@ -1,0 +1,46 @@
+# Module: cpu
+# Description: Rules for processor and system usage
+# Version: 0.01
+
+module: cpu
+
+# interval in seconds
+check_interval: 10
+
+system_vars:
+  cpu_cores: "auto"
+
+fields:
+  - name: cpu_usage_percent
+  description: "cpu usage percentage"
+  type: "percentage"
+  base_value: 100
+  warning_multiplier: 0.83
+  critical_multiplier: 0.90
+  unit: "%"
+
+  - name: load_avg5
+  description: "load average over 5 mins"
+  type: "load"
+  base_value: "cores"
+  warning_multiplier: 1
+  critical_multiplyer: 1.5
+  unit: ""
+
+  - name: core_usage_percent
+  description: "core usage percentage"
+  type: "percentage"
+  base_value: 100
+  warning_multiplier: 0.89
+  critical_multiplier: 0.94
+  unit: "%"
+
+  - name: running_procs
+  description: "number of running procs"
+  type: "num"
+  base_value:
+    ref: "cores"
+    multiplier: 2 
+  warning_multiplier: 1
+  critical_multiplier: 1.8
+  unit: ""
