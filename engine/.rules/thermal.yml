@@ -1,0 +1,27 @@
+# Module: thermal
+# Description: rule base for thermal info
+# Version: 0.01
+
+module: thermal
+
+check_interval: 10
+
+system_vars:
+  thermal_zones: "auto"
+
+fields:
+  - name: temperature
+  description: "system average temparature"
+  type: "celsius"
+  base_value: 108
+  warning_multiplier: 0.878
+  critical_multiplier: 0.921
+
+  - name: max_temp
+  description: "hottest zone across all zones"
+  type: "celsius"
+  base_value: 108
+  warning_multiplyer: 0.898
+  critical_multiplyer: 0.935
+
+  
