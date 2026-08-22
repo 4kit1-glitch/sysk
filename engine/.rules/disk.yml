@@ -1,0 +1,19 @@
+# Module: disk
+# Description: rule base for disk info
+# Version: 0.01
+
+module: disk
+
+check_interval: 10
+
+
+system_vars:
+  disk_count: "auto"
+
+field: 
+  - name: disk_used_percentage
+  type: "percent"
+  base_value: 88
+  warning_multiplier: 0.95
+  critical_multiplier: 1
+  unit: "%"
