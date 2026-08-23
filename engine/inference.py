@@ -8,6 +8,7 @@ from os import environ, path, makedirs
 from json import load, dump
 from yaml import safe_load
 
+
 DATE = environ.get("DATE")
 PROGRAM_PATH = environ.get("SCRIPT_DIR")   # program path
 CACHE_PATH = environ.get("CACHE_PATH")
@@ -16,4 +17,10 @@ RULE_DIR = environ.get("RULE_DIR")
 RESULT_DIR = environ.get("RESULT_DIR")
 
 
+def is_dir_present(dir_name):
+    """check if a path is present"""
+    return path.isdir(dir_name)
 
+def is_file_present(file_path):
+    """check if a file is present"""
+    return path.isfile(file_path)
