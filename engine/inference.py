@@ -16,6 +16,8 @@ ENGINE_DIR = environ.get("ENGINE_DIR")
 RULE_DIR = environ.get("RULE_DIR")
 RESULT_DIR = environ.get("RESULT_DIR")
 
+RULES = {}
+
 def is_dir_present(dir_name: str) -> bool:
     """check if a directory is present"""
     return Path(dir_name).is_dir()
@@ -57,13 +59,23 @@ def create_dir(directory) -> None:
 
 
 def run_dir_check(*directories) -> None:
-    """ check if requred dirs are present """
+    """ check if directories are present """
+    absent_dirs = []
     for directory in directories:
-        if directory is None or not str(directory).strip():
-            print("[ERROR environment variable not se]")
-        if not is_dir_present(directory):
-            print(f"[ERROR] {directory} not found...")
-            sys.exit(127)
+        try:
+            if not is_dir_present(directory):
+                absent_dirs.append(directory)
+        except TypeError:
+            print(f"[ERROR] invalid type: {directory}")
+            sys.exit(2)
+
+    if absent_dirs:
+        print(f"[ERROR] required directories missing: {absent_dirs}")
+        sys.exit(1)
+
+
+
+
 
 def run_file_check(*files) -> None:
     """ check if requred files are present"""
@@ -73,4 +85,19 @@ def run_file_check(*files) -> None:
             sys.exit(127)
 
 
-run_var_check()
+
+
+
+
+
+
+
+
+def main() -> int:
+    pass
+    
+
+
+
+if __name__ == "__main__":
+    sys.exit(main())
