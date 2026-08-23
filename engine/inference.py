@@ -79,10 +79,19 @@ def run_dir_check(*directories) -> None:
 
 def run_file_check(*files) -> None:
     """ check if requred files are present"""
+    absent_files = []
     for file in files:
-        if not is_file_present(file):
-            print("[ERROR] {file} not found...")
-            sys.exit(127)
+        try:
+            if not is_file_present(file):
+                absent_files.append(file)
+        except TypeError:
+            print(f"[ERROR] invalid type: {file}")
+            sys.exit(2)
+
+        if absent_files:
+            print(f"[ERROR] required directories missing: {absent_files}")
+            sys.exit(1)   
+
 
 
 
