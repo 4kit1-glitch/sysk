@@ -44,9 +44,9 @@ def run_var_check() -> None:
         print(f"[ERROR] required variables absent: {not_set_list}")
         sys.exit(127)
 
-def create_result_dir():
-    """ creates result directory if not present """
-    results_path=Path(RESULT_DIR)
+def create_dir(directory) -> None:
+    """ creates directory if not present """
+    results_path=Path(directory)
     try:
         results_path.mkdir(parents=True, exist_ok=True)
     except OSError:
