@@ -56,19 +56,21 @@ def create_dir(directory) -> None:
 
 
 
-def run_dir_check(directories: list[str]) -> None:
+def run_dir_check(*directories) -> None:
+    """ check if requred dirs are present """
     for directory in directories:
         if directory is None or not str(directory).strip():
             print("[ERROR environment variable not se]")
         if not is_dir_present(directory):
             print(f"[ERROR] {directory} not found...")
-            exit(127)
+            sys.exit(127)
 
-def run_file_check(files: list[str]) -> None:
+def run_file_check(*files) -> None:
+    """ check if requred files are present"""
     for file in files:
         if not is_file_present(file):
             print("[ERROR] {file} not found...")
-            exit(environ.get("ERR_NOT_FOUND"))
+            sys.exit(127)
 
 
 run_var_check()
