@@ -5,6 +5,7 @@
 
 from sys import exit, argv
 from os import environ, path, makedirs
+from pathlib import Path
 from json import load, dump
 from yaml import safe_load
 
@@ -17,10 +18,10 @@ RULE_DIR = environ.get("RULE_DIR")
 RESULT_DIR = environ.get("RESULT_DIR")
 
 
-def is_dir_present(dir_name):
+def is_dir_present(dir_name: str) -> bool:
     """check if a path is present"""
-    return path.isdir(dir_name)
+    return Path(dir_name).is_dir()
 
-def is_file_present(file_path):
+def is_file_present(file_path: str) -> bool:
     """check if a file is present"""
-    return path.isfile(file_path)
+    return Path(file_path).is_file()
