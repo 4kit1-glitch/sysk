@@ -90,10 +90,20 @@ def run_file_check(*files) -> None:
             sys.exit(1)   
 
 
-def laod_rules(rule_path: Path) -> dict:
+def load_rules(rule_path: Path) -> dict:
     """ loads rules from yaml files in the rule_path """
     with rule_path.open(encoding="utf-8") as rule:
         return safe_load(rule)
+
+
+def load_json(data_path: Path) -> dict:
+    """ loads data from json in cache """
+    pass
+
+def resolve(data: dict, source: str) -> any:
+    """ gets required data provided by source"""
+    
+
 
 
 
