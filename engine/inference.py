@@ -6,7 +6,8 @@
 import sys
 from os import environ, path, makedirs
 from pathlib import Path
-from json import load, dump
+from typing import Any
+from json import load, dump, JSONDecodeError
 from yaml import safe_load
 
 DATE = environ.get("DATE")
@@ -15,8 +16,6 @@ CACHE_PATH = environ.get("CACHE_PATH")
 ENGINE_DIR = environ.get("ENGINE_DIR")
 RULE_DIR = environ.get("RULE_DIR")
 RESULT_DIR = environ.get("RESULT_DIR")
-
-RULES = {}
 
 def is_dir_present(dir_name: str) -> bool:
     """check if a directory is present"""
@@ -96,12 +95,53 @@ def load_rules(rule_path: Path) -> dict:
         return safe_load(rule)
 
 
-def load_json(data_path: Path) -> dict:
+def load_json(data_path: Path) -> Any:
     """ loads data from json in cache """
-    pass
+    try:
+        with data_path.open(encoding="utf -8") as data:
+            return load(data)
+    except (TypeError, FileNotFoundError, OSError, JSONDecodeError) as err:
+        print(f"[ERROR] failed to load json file {data_path}", file=sys.stderr)
+        print(f"concided errors: {err}", file=sys.stderr)
+        sys.exit(1)
+
+def get_dict_value(data: dict, sub_source: any) -> any:
+    """ breaks data subsections and nests and returns value of specified key """
+    try:
+        return data[sub_source]
+    except KeyError:
+        print(f"[ERROR] key {sub_source} not found in data", file=sys.stderr)
+        sys.exit(1)
+    except TypeError:
+        print(f"[ERROR] invalid type for data: {type(data)}", file=sys.stderr)
+        sys.exit(1)
+
+def get_list_value(data: list, index: int) -> Any:
+    """ returns the item in the given index """
+    try:
+        return data[index]
+    except IndexError:
+        print(f"[ERROR] index {index} not found in data", file=sys.stderr)
+        sys.exit(1)
+    except TypeError:
+        print(f"[ERROR] invalid type for data: {type(data)}", file=sys.stderr)
+        sys.exit(1)
 
 def resolve(data: dict, source: str) -> any:
     """ gets required data provided by source"""
+    objects = source.split(".")
+    for obj in objects:
+        if obj.isdigit():
+            data = get_list_value(data, int(obj))
+            continue
+        data = get_dict_value(data, obj)
+    return data
+
+            
+            
+
+
+
     
 
 
