@@ -74,9 +74,6 @@ def run_dir_check(*directories) -> None:
         sys.exit(1)
 
 
-
-
-
 def run_file_check(*files) -> None:
     """ check if requred files are present"""
     absent_files = []
@@ -93,9 +90,10 @@ def run_file_check(*files) -> None:
             sys.exit(1)   
 
 
-
-
-
+def laod_rules(rule_path: Path) -> dict:
+    """ loads rules from yaml files in the rule_path """
+    with rule_path.open(encoding="utf-8") as rule:
+        return safe_load(rule)
 
 
 
