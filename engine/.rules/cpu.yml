@@ -12,35 +12,39 @@ system_vars:
 
 fields:
   - name: cpu_usage_percent
-  description: "cpu usage percentage"
-  type: "percentage"
-  base_value: 100
-  warning_multiplier: 0.83
-  critical_multiplier: 0.90
-  unit: "%"
+    description: "cpu usage percentage"
+    source: "usage"
+    type: "percentage"
+    base_value: 100
+    warning_multiplier: 0.83
+    critical_multiplier: 0.90
+    unit: "%"
 
   - name: load_avg5
-  description: "load average over 5 mins"
-  type: "load"
-  base_value: "cores"
-  warning_multiplier: 1
-  critical_multiplyer: 1.5
-  unit: ""
+    description: "load average over 5 mins"
+    source: "laod_avg[2]"
+    type: "load"
+    base_value: "cores"
+    warning_multiplier: 1
+    critical_multiplyer: 1.5
+    unit: ""
 
   - name: core_usage_percent
-  description: "core usage percentage"
-  type: "percentage"
-  base_value: 100
-  warning_multiplier: 0.89
-  critical_multiplier: 0.94
-  unit: "%"
+    description: "core usage percentage"
+    source: "core_usages"
+    type: "percentage"
+    base_value: 100
+    warning_multiplier: 0.89
+    critical_multiplier: 0.94
+    unit: "%"
 
   - name: running_procs
-  description: "number of running procs"
-  type: "num"
-  base_value:
-    ref: "cores"
-    multiplier: 2 
-  warning_multiplier: 1
-  critical_multiplier: 1.8
-  unit: ""
+    description: "number of running procs"
+    source: "total_procs"
+    type: "num"
+    base_value:
+      ref: "cores"
+      multiplier: 2 
+    warning_multiplier: 1
+    critical_multiplier: 1.8
+    unit: ""
