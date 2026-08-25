@@ -22,7 +22,7 @@ fields:
 
   - name: load_avg5
     description: "load average over 5 mins"
-    source: "laod_avg[2]"
+    source: "load_avg.1"
     type: "load"
     base_value: "cores"
     warning_multiplier: 1
@@ -31,7 +31,7 @@ fields:
 
   - name: core_usage_percent
     description: "core usage percentage"
-    source: "core_usages"
+    source: "core_info.cores_usage"
     type: "percentage"
     base_value: 100
     warning_multiplier: 0.89
@@ -40,7 +40,7 @@ fields:
 
   - name: running_procs
     description: "number of running procs"
-    source: "total_procs"
+    source: "process_info.running_procs"
     type: "num"
     base_value:
       ref: "cores"
