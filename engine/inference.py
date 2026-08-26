@@ -4,7 +4,7 @@
 # rules are found in engine/.rules/*.yaml
 
 import sys
-from os import environ, path, makedirs
+from os import environ
 from pathlib import Path
 from typing import Any
 from json import load, dump, JSONDecodeError
@@ -16,6 +16,8 @@ CACHE_PATH = environ.get("CACHE_PATH")
 ENGINE_DIR = environ.get("ENGINE_DIR")
 RULE_DIR = environ.get("RULE_DIR")
 RESULT_DIR = environ.get("RESULT_DIR")
+
+FLAGS = ("OK", "WARNING", "CRITICAL", "N/A")
 
 def is_dir_present(dir_name: str) -> bool:
     """check if a directory is present"""
@@ -137,14 +139,124 @@ def resolve(data: dict, source: str) -> any:
         data = get_dict_value(data, obj)
     return data
 
-            
-            
+
+def clean_data(value: str, unwanted: str) -> float:
+    """ removes unwanted words and chars from data """
+    try:
+        return float(value.strip(unwanted))
+    except(AttributeError):
+        return value
+
+def get_status_flag(value: float, warning_lvl: float, critical_lvl: float) -> str:
+    """ does comparisition and returns corresponding flag"""
+    try:
+        if (value >= warning_lvl) and (value < critical_lvl):
+            return FLAGS[1]
+        elif value >= critical_lvl:
+            return FLAGS[2]
+        else:
+            return FLAGS[0]
+    except(TypeError, AttributeError):
+        return FLAGS[3]
+
+def get_base_value(data: dict, base: Any) -> Any:
+    """ returns base value in already calculated form """
+    try:
+        if isinstance(base, str):
+            return resolve(data, base)
+        elif isinstance(base, dict):
+            return (resolve(data, base["ref"]) * base["multiplier"])
+        else:
+            return base
+    except(TypeError):
+        print("[ERROR] failed to get base", file=sys.stderr)
+        sys.exit(1)
+
+def get_module_dict(name: str, value: Any, status: str, threshold: Any) -> dict:
+    """ properly forms module dictionary"""
+    name = {
+        "value": value,
+        "status": status,
+        "threshold": threshold
+    }
+    return name
+
+def get_required_module_info(data: dict, rule: dict) -> tuple:
+    """ returns name, value, threshold and status """
+    name = rule["name"]
+    source = rule["source"]
+    value = clean_data(resolve(data, source), rule["unit"])
+    unit = rule["unit"]
+    base_value = get_base_value(data, rule["base_value"])
+    warning_limit = (base_value * rule["warning_multiplier"])
+    critical_limit = (base_value * rule["critical_multiplier"])
+    status = get_status_flag(value, warning_limit, critical_limit)
+
+    if status == FLAGS[0] or status == FLAGS[1]:
+        threshold = warning_limit
+    elif status == FLAGS[2]:
+        threshold = critical_limit
+    else:
+        threshold = FLAGS[3]
+
+    return name, value, status, threshold
 
 
 
-    
 
 
+
+
+
+def _evaluate_cpu(cpu_data: dict, cpu_rule: dict) -> dict:
+    """ evaluates data with rules and returns correct flag"""
+    module = cpu_rule["module"]
+    cpu_dict ={}
+    for field in cpu_rule["fields"]:
+        name, value, status, threshold = get_required_module_info(cpu_data, field)
+        cpu_dict.update({name: get_module_dict(name, value, status, threshold)})
+
+    def evaluate_cores():
+        """ special mid functions to break core values and hadle them"""
+        # very poor implementation will handle later 
+        cores_value = cpu_dict["core_usage_percent"]["value"]
+        cores = len(cores_value)
+        overused_cores = []
+        warn_count = 0
+        critical_count = 0
+        for core, value in cores_value.items():
+            cleaned_value = clean_data(value, "%")
+            if cleaned_value >= 90 and cleaned_value < 95:
+                warn_count += 1
+                overused_cores.append(core)
+            elif cleaned_value > 95:
+                critical_count += 1
+                overused_cores.append(core)
+
+        if warn_count == 0 and critical_count == 0:
+            cpu_dict["core_usage_percent"]["status"] = FLAGS[0]
+        elif warn_count > critical_count:
+            cpu_dict["core_usage_percent"]["status"] = FLAGS[1]
+        else:
+            cpu_dict["core_usage_percent"]["status"] = FLAGS[1]
+    evaluate_cores()
+    return cpu_dict
+
+
+        
+
+
+
+rl = Path("/home/kit/Desktop/SHM/engine/.rules/cpu.yml")
+dt = Path("/home/kit/Desktop/SHM/.cache/sysk/cpu_2026_08_18.json")
+
+x = load_rules(rl)
+y = load_json(dt)
+
+def evaluate():
+    t = _evaluate_cpu(y, x)
+    print(t)
+evaluate()
 
 
 
