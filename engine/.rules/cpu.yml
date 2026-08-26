@@ -26,7 +26,7 @@ fields:
     type: "load"
     base_value: "cores"
     warning_multiplier: 1
-    critical_multiplyer: 1.5
+    critical_multiplier: 1.5
     unit: ""
 
   - name: core_usage_percent
