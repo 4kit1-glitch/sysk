@@ -268,9 +268,13 @@ def _evaluate_thermal(thermal_data: dict, thermal_rule: dict) -> dict:
     return thermal_dict
 
 
-def _evaluate_disks(disk_data: dict, disk_rule: dict):
-    pass
 def _evaluate_memory(mem_data: dict, mem_rule: dict):
+    pass
+
+def _evaluate_disks(disk_data: dict, disk_rule: dict):
+    # disk info is not in a correct format 
+    # too difficult to parse
+    # will add after ajustng disk data format
     pass
 
 
