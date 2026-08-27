@@ -13,33 +13,36 @@ system_vars:
 
 fields:
   - name: used_memory
-  description: "used memory in mb"
-  type: "Mb"
-  base_value: "total_memory"
-  warning_multiplier: 0.90
-  critical_multiplier: 0.95
-  unit: "Mb"
+    description: "used memory in mb"
+    source: "used_memory"
+    type: "Mb"
+    base_value: "total_memory"
+    warning_multiplier: 0.90
+    critical_multiplier: 0.95
+    unit: "Mb"
 
   - name: swap_used
-  description: "used swap in mb"
-  type: "Mb"
-  base_value: "swap_total"
-  warning_multiplier: 0.50
-  critical_multiplier: 0.70
-  unit: "Mb"
+    description: "used swap in mb"
+    source: "swap.swap_used"
+    type: "Mb"
+    base_value: "swap_total"
+    warning_multiplier: 0.50
+    critical_multiplier: 0.70
 
   - name: corrupted
-  description: "corrupted memory size"
-  type: "Mb"
-  base_value: "total_memory"
-  warning_multiplier: 0.15
-  critical_multiplier: 0.2
-  unit: "Mb"
+    description: "corrupted memory size"
+    source: "corrupted"
+    type: "Mb"
+    base_value: "total_memory"
+    warning_multiplier: 0.15
+    critical_multiplier: 0.2
+    unit: "Mb"
 
   - name: balloon
-  description: "used by virtual machines"
-  type: "Mb"
-  base_value: "total_memory"
-  warning_multiplier: 0.5
-  critical_multiplier: 0.6
-  unit: "Mb"
+    description: "used by virtual machines"
+    source: "balloon"
+    type: "Mb"
+    base_value: "total_memory"
+    warning_multiplier: 0.5
+    critical_multiplier: 0.6
+    unit: "Mb"
