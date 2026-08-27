@@ -12,9 +12,10 @@ system_vars:
 
 fields: 
   - name: disk_used_percentage
-  description: "disk usage percentage"
-  type: "percent"
-  base_value: 88
-  warning_multiplier: 0.95
-  critical_multiplier: 1
-  unit: "%"
+    description: "disk usage percentage"
+    source: fsuse%
+    type: "percent"
+    base_value: 88
+    warning_multiplier: 0.95
+    critical_multiplier: 1
+    unit: "%"
