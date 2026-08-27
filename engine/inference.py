@@ -187,7 +187,7 @@ def get_required_module_info(data: dict, rule: dict) -> tuple:
     source = rule["source"]
     value = clean_data(resolve(data, source), rule["unit"])
     unit = rule["unit"]
-    base_value = get_base_value(data, rule["base_value"])
+    base_value = clean_data(get_base_value(data, rule["base_value"]), unit)
     warning_limit = (base_value * rule["warning_multiplier"])
     critical_limit = (base_value * rule["critical_multiplier"])
     status = get_status_flag(value, warning_limit, critical_limit)
@@ -269,7 +269,11 @@ def _evaluate_thermal(thermal_data: dict, thermal_rule: dict) -> dict:
 
 
 def _evaluate_memory(mem_data: dict, mem_rule: dict):
-    pass
+    mem_dict = {}
+    for field in mem_rule["fields"]:
+        name, value, status, threshold = get_required_module_info(mem_data, field)
+        mem_dict.update({name: get_module_dict(name, value, status, threshold)})
+    return mem_dict
 
 def _evaluate_disks(disk_data: dict, disk_rule: dict):
     # disk info is not in a correct format 
@@ -277,20 +281,39 @@ def _evaluate_disks(disk_data: dict, disk_rule: dict):
     # will add after ajustng disk data format
     pass
 
-
-        
-
-
-
-rl = Path("/home/kit/Desktop/SHM/engine/.rules/thermal.yml")
-dt = Path("/home/kit/Desktop/SHM/.cache/sysk/thermal_2026_08_18.json")
-
-x = load_rules(rl)
-y = load_json(dt)
-
 def evaluate():
-    t = _evaluate_thermal(y, x)
-    print(t)
+    # this is temporal fpr v1 will implement an advanced walking directory system when all modules are complete
+    MODULES = {
+        "cpu": {
+            "rule" : load_rules(Path(RULE_DIR) / "cpu.yml"),
+            "data": load_json(Path(CACHE_PATH) / f"sysk/cpu_{DATE}.json")
+        },
+        "memory": {
+            "rule" : load_rules(Path(RULE_DIR) / "memory.yml"),
+            "data": load_json(Path(CACHE_PATH) / f"sysk/memory_{DATE}.json")
+        },
+        "thermal": {
+            "rule" : load_rules(Path(RULE_DIR) / "thermal.yml"),
+            "data": load_json(Path(CACHE_PATH) / f"sysk/thermal_{DATE}.json")
+        }
+    }
+
+    results = {}
+    try:
+        for module, value in MODULES.items():  
+            if module == "cpu":
+                results.update(_evaluate_cpu(value["data"], value["rule"]))
+            elif module == "memory":
+                results.update(_evaluate_memory(value["data"], value["rule"]))
+            elif module == "thermal":
+                results.update(_evaluate_thermal(value["data"], value["rule"]))
+            else:
+                raise NotImplementedError
+    except NotImplementedError:
+        print("[ERROR] MODULE NOT IMPLEMENTED", file=sys.stderr)
+        sys.exit(1)
+    return results
+
 evaluate()
 
 
