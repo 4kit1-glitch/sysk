@@ -10,6 +10,7 @@
 # system files
 .sys
 .conf
+*.pyc
 
 # vars
 .env
@@ -26,3 +27,4 @@
 /*.venv
 /.vscode
 /engine/results
+/__pycache__
