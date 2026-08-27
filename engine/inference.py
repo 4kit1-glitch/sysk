@@ -346,7 +346,7 @@ def main() -> int:
     # create result directory
     create_dir(RESULT_DIR)
     results = evaluate()
-    result_path = Path(RESULT_DIR) /"result.json"
+    result_path = Path(RESULT_DIR) /f"result_{DATE}.json"
     generate_results(results, result_path)
 
     run_file_check(result_path)
