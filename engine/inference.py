@@ -87,7 +87,7 @@ def run_file_check(*files) -> None:
             sys.exit(2)
 
         if absent_files:
-            print(f"[ERROR] required directories missing: {absent_files}")
+            print(f"[ERROR] required files missing: {absent_files}")
             sys.exit(1)   
 
 
