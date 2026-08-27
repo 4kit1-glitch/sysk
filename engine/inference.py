@@ -202,15 +202,8 @@ def get_required_module_info(data: dict, rule: dict) -> tuple:
     return name, value, status, threshold
 
 
-
-
-
-
-
-
 def _evaluate_cpu(cpu_data: dict, cpu_rule: dict) -> dict:
     """ evaluates data with rules and returns correct flag"""
-    module = cpu_rule["module"]
     cpu_dict ={}
     for field in cpu_rule["fields"]:
         name, value, status, threshold = get_required_module_info(cpu_data, field)
@@ -229,7 +222,7 @@ def _evaluate_cpu(cpu_data: dict, cpu_rule: dict) -> dict:
             if cleaned_value >= 90 and cleaned_value < 95:
                 warn_count += 1
                 overused_cores.append(core)
-            elif cleaned_value > 95:
+            elif cleaned_value >= 95:
                 critical_count += 1
                 overused_cores.append(core)
 
@@ -242,19 +235,57 @@ def _evaluate_cpu(cpu_data: dict, cpu_rule: dict) -> dict:
     evaluate_cores()
     return cpu_dict
 
+def _evaluate_thermal(thermal_data: dict, thermal_rule: dict) -> dict:
+    """ evaluates thermal info and returns thermal result dict"""
+    module = thermal_rule["module"]
+    thermal_dict ={}
+    for field in thermal_rule["fields"]:
+        name, value, status, threshold = get_required_module_info(thermal_data, field)
+        thermal_dict.update({name: get_module_dict(name, value, status, threshold)})
+
+    def evaluate_zones():
+        max = 0
+        for zone, temp in thermal_dict["max_temp"]["value"].items():
+            if temp == "N/A":
+                continue
+            elif float(temp) >= max:
+                max = float(temp)
+                hottest_zone = zone
+        if max >= 89.8 and max < 96.8:
+            thermal_dict["max_temp"]["status"] = FLAGS[1]
+            thermal_dict["max_temp"]["threshold"] = 89.8
+
+        elif max >= 96.8:
+            thermal_dict["max_temp"]["status"] = FLAGS[2]
+            thermal_dict["max_temp"]["threshold"] = 96.8
+        else:
+            thermal_dict["max_temp"]["status"] = FLAGS[0]
+            thermal_dict["max_temp"]["threshold"] = 89.8
+
+        
+        thermal_dict["max_temp"]["value"] = {hottest_zone: max}
+    evaluate_zones()
+    return thermal_dict
+
+
+def _evaluate_disks(disk_data: dict, disk_rule: dict):
+    pass
+def _evaluate_memory(mem_data: dict, mem_rule: dict):
+    pass
+
 
         
 
 
 
-rl = Path("/home/kit/Desktop/SHM/engine/.rules/cpu.yml")
-dt = Path("/home/kit/Desktop/SHM/.cache/sysk/cpu_2026_08_18.json")
+rl = Path("/home/kit/Desktop/SHM/engine/.rules/thermal.yml")
+dt = Path("/home/kit/Desktop/SHM/.cache/sysk/thermal_2026_08_18.json")
 
 x = load_rules(rl)
 y = load_json(dt)
 
 def evaluate():
-    t = _evaluate_cpu(y, x)
+    t = _evaluate_thermal(y, x)
     print(t)
 evaluate()
 

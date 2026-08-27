@@ -11,17 +11,18 @@ system_vars:
 
 fields:
   - name: temperature
-  description: "system average temparature"
-  type: "celsius"
-  base_value: 108
-  warning_multiplier: 0.878
-  critical_multiplier: 0.921
+    description: "system average temparature"
+    source: average_temp
+    unit: "celsius"
+    base_value: 108
+    warning_multiplier: 0.878
+    critical_multiplier: 0.921
 
   - name: max_temp
-  description: "hottest zone across all zones"
-  type: "celsius"
-  base_value: 108
-  warning_multiplyer: 0.898
-  critical_multiplyer: 0.935
-
+    description: "hottest zone across all zones"
+    source: zone_temparatures
+    unit: "celsius"
+    base_value: 108
+    warning_multiplier: 0.898
+    critical_multiplier: 0.935
   
