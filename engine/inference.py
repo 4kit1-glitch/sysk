@@ -281,7 +281,7 @@ def _evaluate_disks(disk_data: dict, disk_rule: dict):
     # will add after ajustng disk data format
     pass
 
-def evaluate():
+def evaluate() -> dict:
     # this is temporal fpr v1 will implement an advanced walking directory system when all modules are complete
     MODULES = {
         "cpu": {
@@ -314,17 +314,44 @@ def evaluate():
         sys.exit(1)
     return results
 
-evaluate()
-
+def generate_results(result: dict, path: Path):
+    try:
+        with path.open("w", encoding="utf-8") as file:
+            dump(result, file, indent=4)
+    except (PermissionError, OSError, TypeError) as err:
+        print(f"[ERROR]: failed to create {path}: {ImportError}...", file=sys.stderr)
+        sys.exit(1)
 
 
 
 
 def main() -> int:
-    pass
-    
+    """ entry point"""
+    # run environment variable checks
+    run_var_check()
 
+    # run required directory and file check
+    run_dir_check(Path(CACHE_PATH) / "sysk", RULE_DIR)
 
+    # run required file checks 
+    run_file_check(
+        Path(RULE_DIR) / "cpu.yml",
+        Path(CACHE_PATH) / f"sysk/cpu_{DATE}.json",
+        Path(RULE_DIR) / "memory.yml",
+        Path(CACHE_PATH) / f"sysk/memory_{DATE}.json",
+        Path(RULE_DIR) / "thermal.yml",
+        Path(CACHE_PATH) / f"sysk/thermal_{DATE}.json"
+    )
+
+    # create result directory
+    create_dir(RESULT_DIR)
+    results = evaluate()
+    result_path = Path(RESULT_DIR) /"result.json"
+    generate_results(results, result_path)
+
+    run_file_check(result_path)
+
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
