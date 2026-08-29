@@ -28,7 +28,7 @@ OPTIONS:
 -r      : reset collected data
 -q      : no tui --settings
 
--d [module]     : display collected data on a given module
+-m [module]     : display collected data on a given module
                 - cpu, thermal, disk, memory
 "
 return $?
