@@ -15,7 +15,7 @@
 
 
 usage() { printf "%s\n" "\
-usage: sysk \"[OPTIONS]\" \"[ARGS]\"
+(usage: sysk \"[OPTIONS]\" \"[ARGS]\")
 
 Sysk is a CLI system health monitor tool written in BASH and Python.
 Sysk collects system information and produces an alert in case of a malfunction
@@ -26,7 +26,6 @@ OPTIONS:
 -h      : display help menu and exit
 -v      : display current version and exit
 -r      : reset collected data
--q      : no tui --settings
 
 -m [module]     : display collected data on a given module
                 - cpu, thermal, disk, memory
