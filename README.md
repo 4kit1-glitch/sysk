@@ -76,9 +76,9 @@ Sysk currently supports the following command-line flags from the parser:
 
 ### Supported flags
 
-- `-h` or `--help`: display the help menu and exit.
-- `-v` or `--version`: print the current Sysk version and exit.
-- `-r` or `--reset`: clear old collected data and exit.
+- `-h` : display the help menu and exit.
+- `-v` : print the current Sysk version and exit.
+- `-r` : clear old collected data and exit.
 - `-m [module]`: display the most recent data for a given module, such as `cpu`, `memory`, `thermal`, or `disk`.
 
 ### Example commands
