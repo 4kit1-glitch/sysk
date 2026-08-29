@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vim: noai:ts=4:sw=4:expandtab
 # shellcheck source=/dev/null
-# shellcheck disable=2034
+# 
 # getops and flag parser script
 #
 
@@ -34,8 +34,14 @@ OPTIONS:
 return $?
 }
 
+display_data() {
+    # display most resent data
+    path="$1"
+    find "$CONFIG_DIR/$path"* -printf "%p\n" | sort -rn | head -1 | xargs jq . || return "$ERR_FAILURE"
+    return $?
+}
 parse_args() {
-    while getopts ':hvrd:' opt; do
+    while getopts ':hvrm:' opt; do
         case "$opt" in
             h)
                 usage || echo "cant generate help" >&2
@@ -46,23 +52,26 @@ parse_args() {
                 exit 0
                 ;;
             r)
-                clean_cache && clean_logs || echo "cleaning failed" >&2
+                clear_old_data || echo "cleaning failed" >&2
                 echo "cleaning complete"
                 exit 0
                 ;;
-            d)
-                module=$OPTARG
-                display_data "$module" || printf "Failed to display module" >&2
-                exit 0
+            m)
+                display_data "$OPTARG" || {
+                    printf "Failed to display module" >&2
+                    exit "$ERR_FAILURE"
+                }
+                exit "$ERR_SUCCESS"
                 ;;
             :)
-                printf "option requires an argument: -%s" "$OPTARG"
-                exit 0
+                printf "option requires an argument: -%s\n" "$OPTARG" >&2
+                usage >&2
+                exit "$ERR_FAILURE"
                 ;;
             \?)
                 printf "unknown option: -%s\n" "$OPTARG" >&2
-                usage
-                exit 0
+                usage >&2
+                exit "$ERR_FAILURE"
                 ;;
         esac
     done
