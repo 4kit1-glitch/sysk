@@ -6,22 +6,43 @@
 
 # array variable that stores the required dependencies of the program
 declare -r required_deps=(
-    "sed" "awk" "grep" "wc" "free"
+    "sed" "awk" "grep" "wc" "free" 
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "pactl"
-    "aplay" "upower" "df" "info" "jq"
-    "smartmontools" "acpi" "pactl"
+    "aplay" "upower" "df" "jq" "find"
+    "smartmontools" "pactl"
 )
 
 declare -r required_files=(
     "/proc/meminfo" "/proc/cpuinfo" 
-    "/proc/loadavg" "/proc/stat" "/proc/uptime"
+    "/proc/loadavg" "/proc/stat" 
+    "/proc/uptime"
 )
 declare -r required_dirs=(
-    "/sys/block" "/sys/class/thermal/thermal_zone"
+    "/sys/block" "/sys/class/thermal"
     "/sys/class/hwmon"
 )
 
+check_req_files() {
+    local -a missing_files=()
+    for file in "${required_files[@]}"; do
+        [[ -f $file && -r $file ]] || {
+            missing_files+=("$file")
+        }
+    done
+    [[ ${#missing_files[@]} -eq 0 ]] && return "$ERR_SUCCESS" || return "$ERR_NOT_FOUND"
+}
+
+check_req_dirs() {
+    local -a missing_dirs=()
+    for directory in "${required_dirs[@]}"; do
+        [[ -d $directory ]] || {
+            missing_dirs+=("$directory")
+        }
+    done
+    [[ ${#missing_dirs[@]} -eq 0 ]] && return "$ERR_SUCCESS" || return "$ERR_NOT_FOUND"
+
+}
 # variable stores the missing dependencies
 declare -a missing_deps=()
 
