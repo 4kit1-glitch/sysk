@@ -13,6 +13,15 @@ declare -r required_deps=(
     "smartmontools" "acpi" "pactl"
 )
 
+declare -r required_files=(
+    "/proc/meminfo" "/proc/cpuinfo" 
+    "/proc/loadavg" "/proc/stat" "/proc/uptime"
+)
+declare -r required_dirs=(
+    "/sys/block" "/sys/class/thermal/thermal_zone"
+    "/sys/class/hwmon"
+)
+
 # variable stores the missing dependencies
 declare -a missing_deps=()
 
