@@ -62,13 +62,51 @@ Run the tool from the project root:
 ./sysk
 ```
 
-Flag support is planned and will be added once the CLI parser is implemented. The intended usage pattern is:
+Sysk currently supports the following command-line flags from the parser:
 
 ```bash
-./sysk [OPTIONS]
+./sysk -h
+./sysk -v
+./sysk -r
+./sysk -m cpu
+./sysk -m memory
+./sysk -m thermal
+./sysk -m disk
 ```
 
-Examples of planned options include targeted checks, JSON output selection, and future configuration overrides.
+### Supported flags
+
+- `-h` or `--help`: display the help menu and exit.
+- `-v` or `--version`: print the current Sysk version and exit.
+- `-r` or `--reset`: clear old collected data and exit.
+- `-m [module]`: display the most recent data for a given module, such as `cpu`, `memory`, `thermal`, or `disk`.
+
+### Example commands
+
+```bash
+# Show help
+./sysk -h
+
+# Show the current project version
+./sysk -v
+
+# Reset stored health data
+./sysk -r
+
+# View the latest CPU data
+./sysk -m cpu
+
+# View the latest memory data
+./sysk -m memory
+
+# View the latest thermal data
+./sysk -m thermal
+
+# View the latest disk data
+./sysk -m disk
+```
+
+The flag parser is still under active development, but these are the options currently implemented in the Bash layer.
 
 ---
 
