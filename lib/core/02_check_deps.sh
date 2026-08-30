@@ -10,7 +10,7 @@ declare -r required_deps=(
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "pactl"
     "aplay" "upower" "df" "jq" "find"
-    "smartmontools" "pactl"
+    "pactl"
 )
 
 declare -r required_files=(

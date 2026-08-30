@@ -74,7 +74,5 @@ install_missing_deps() {
                 exit 2 ;;
         esac
     done
-    sleep 1
-    clear
     confirm_installation && return 0
 }

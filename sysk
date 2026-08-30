@@ -60,7 +60,42 @@ for script in "$HW_DIR"/*.sh; do
 done
 
 main() {
+    # check req files
+    # check req dirs
+    # install mising deps
+    # comfirm installation
+    # run data collections
+    # run inference engine and generate results
+    # run decision engine and generate results
+    # run tui if -q flag isnt given which just pretty print results and decition
+    # exit 
+    check_req_files || {
+        printf "Required files missing" >&2
+        exit "$ERR_FAILURE"
+    }
+    check_req_dirs || {
+        printf "Required directories missing" >&2
+        exit "$ERR_FAILURE"
+    }
+
+    parse_args "$@"
+    # installing missing dependencies
     install_missing_deps
-    confirm_installation
+
+    # running data collections
+    write_cpu_json &
+    write_memory_json
+    write_thermal_json
+    write_disk_json 
+    write_sound_json
+
+    # run engine
+    python3 "$ENGINE_DIR"/inference.py && python3 "$ENGINE_DIR"/decision.py
+
+    display_tui || {
+        exit "$ERR_FAILURE"
+    }
+    exit "$ERR_SUCCESS"
 }
-python3 "$ENGINE_DIR/inference.py"
+
+main "$@"
