@@ -52,7 +52,10 @@ parse_args() {
                 exit 0
                 ;;
             r)
-                clear_old_data || echo "cleaning failed" >&2
+                clear_old_data || {
+                    echo "cleaning failed" >&2
+                    exit 1
+                }
                 echo "cleaning complete"
                 exit 0
                 ;;

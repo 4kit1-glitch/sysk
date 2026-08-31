@@ -20,8 +20,8 @@ clear_old_data() {
     # deletes files older than 3 days
     local directories=("$CONFIG_DIR" "$DUMPS_PATH" "$RESULT_DIR")
     for directory in "${directories[@]}"; do
-        find "$directory" -type f -mtime +3 -print -delete ||  {
-            printf "failed to remove old files"
+        find "$directory" -type f -mtime +3 -print -delete 2> /dev/null ||  {
+            printf "failed to remove old files\n"
             return "$ERR_FAILURE"
         }
     done
