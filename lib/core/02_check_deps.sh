@@ -10,7 +10,7 @@ declare -r required_deps=(
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "pactl"
     "aplay" "upower" "df" "jq" "find"
-    "pactl"
+    "pulseaudio-utils"
 )
 
 declare -r required_files=(
