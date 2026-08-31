@@ -36,7 +36,7 @@ return $?
 display_data() {
     # display most resent data
     path="$1"
-    find "$CONFIG_DIR/$path"* -printf "%p\n" | sort -rn | head -1 | xargs jq . || return "$ERR_FAILURE"
+    find "$CONFIG_DIR/$path"* -printf "%p\n" 2> /dev/null | sort -rn | head -1 | xargs jq . || return "$ERR_FAILURE"
     return $?
 }
 parse_args() {
