@@ -8,8 +8,8 @@
 declare -r required_deps=(
     "sed" "awk" "grep" "wc" "free" 
     "dmidecode" "lscpu" "lsblk" "cat"
-    "ls" "cd" "pwd" "dirname" "pactl"
-    "aplay" "upower" "df" "jq" "find"
+    "ls" "cd" "pwd" "dirname" "aplay"
+    "upower" "df" "jq" "find" 
     "pulseaudio-utils"
 )
 
