@@ -36,7 +36,7 @@ return $?
 display_data() {
     # display most resent data
     path="$1"
-    find "$CONFIG_DIR/$path"* -printf "%p\n"  return "$ERR_FAILURE" 2> /dev/null \
+    find "$CONFIG_DIR/$path"* -printf "%p\n" 2> /dev/null \
         | sort -rn | head -1 | xargs jq . || return "$ERR_FAILURE"
     return $?
 }
@@ -61,7 +61,7 @@ parse_args() {
                 ;;
             m)
                 display_data "$OPTARG" || {
-                    printf "Failed to display module" >&2
+                    printf "Failed to display module\n" >&2
                     exit "$ERR_FAILURE"
                 }
                 exit "$ERR_SUCCESS"
