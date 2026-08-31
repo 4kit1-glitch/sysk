@@ -6,7 +6,7 @@
 
 # array variable that stores the required dependencies of the program
 declare -r required_deps=(
-    "sed" "awk" "grep" "wc" "free" 
+    "sed" "awk" "grep" "wc"
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "aplay"
     "upower" "df" "jq" "find" 
