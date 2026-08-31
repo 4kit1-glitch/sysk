@@ -9,8 +9,7 @@ declare -r required_deps=(
     "sed" "awk" "grep" "wc"
     "dmidecode" "lscpu" "lsblk" "cat"
     "ls" "cd" "pwd" "dirname" "aplay"
-    "upower" "df" "jq" "find" 
-    "pulseaudio-utils"
+    "upower" "df" "jq" "find" "pactl"
 )
 
 declare -r required_files=(
@@ -49,10 +48,8 @@ declare -a missing_deps=()
 get_missing_deps() {
     # function gets missing dependencies
     for dep in "${required_deps[@]}"; do
-        if [[ $dep == "pulseaudio-utils" ]]; then
-            continue
-        fi
         if ! command -v "$dep" &> /dev/null; then
+            [[ $dep == "pactl" ]] && { dep="pulseauidio-utils"; }
             missing_deps+=("$dep")
         fi
     done

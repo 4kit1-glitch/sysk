@@ -88,7 +88,10 @@ main() {
     write_thermal_json
     write_disk_json 
     write_sound_json
-
+    
+    # create dumps path
+    mkdir -p "$DUMPS_PATH"
+    
     # run engine
     python3 "$ENGINE_DIR"/inference.py && python3 "$ENGINE_DIR"/decision.py
 

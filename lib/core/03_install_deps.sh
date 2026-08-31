@@ -62,9 +62,6 @@ install_missing_deps() {
         exit 1
     fi
     for dep in "${missing_deps[@]}"; do
-        if [[ $dep == "pulseaudio-utils" ]]; then
-            continue
-        fi
         case $os_pkg_manager in
             "apt") run_privileged apt install -y "$dep" ;;
             "dnf") run_privileged dnf install -y "$dep" ;;
