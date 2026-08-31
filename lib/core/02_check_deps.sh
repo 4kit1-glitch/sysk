@@ -49,6 +49,9 @@ declare -a missing_deps=()
 get_missing_deps() {
     # function gets missing dependencies
     for dep in "${required_deps[@]}"; do
+        if [[ $dep == "pulseaudio-utils" ]]; then
+            continue
+        fi
         if ! command -v "$dep" &> /dev/null; then
             missing_deps+=("$dep")
         fi
