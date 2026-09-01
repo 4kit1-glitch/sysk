@@ -6,7 +6,11 @@ This project is a learning-first system health monitor built while teaching myse
 
 ---
 ## DEMO
-<video controls src="demo.mp4" title="DEMO"></video>
+
+
+https://github.com/user-attachments/assets/4ffae457-5c3e-476e-91d4-accadc03b19c
+
+
 ## Architecture overview
 
 Sysk follows a simple two-language pipeline:
