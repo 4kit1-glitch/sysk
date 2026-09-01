@@ -5,7 +5,8 @@ Sysk gathers live system information (CPU, memory, disk, thermal, and hardware) 
 This project is a learning-first system health monitor built while teaching myself Bash and Python. It is intentionally practical, transparent, and easy to follow: Bash handles collection and normalization, while Python handles inference, categorization, and final decision-making.
 
 ---
-
+## DEMO
+<video controls src="demo.mp4" title="DEMO"></video>
 ## Architecture overview
 
 Sysk follows a simple two-language pipeline:
@@ -30,7 +31,7 @@ In other words, Sysk is not just a script collection; it is a small evidence-dri
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/sysk.git
+git clone https://github.com/4kit1-glitch/sysk.git
 cd sysk
 ```
 
